@@ -9,6 +9,7 @@ module.exports = {
 		const embed = new MessageEmbed()
 			.setColor('#0099ff')
 			.setTitle(`${interaction.guild.name}`)
+			.setThumbnail(`${interaction.guild.iconURL()}`)
 			.addFields(
 				{ name: 'Members', value: `${interaction.guild.memberCount}` },
 			)

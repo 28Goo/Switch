@@ -1,6 +1,6 @@
 // Get requirements for bot to work
 const fs = require('fs');
-const { Client, Collection, Intents, MessageActionRow, MessageButton } = require('discord.js');
+const { Client, Collection, Intents } = require('discord.js');
 const { token } = require('./config.json');
 
 // Create client instance
@@ -12,7 +12,6 @@ const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('
 for (const file of commandFiles) {
 	// Get file
 	const command = require(`./commands/${file}`);
-
 	// Get command from file and add to collection
 	client.commands.set(command.data.name, command);
 }
