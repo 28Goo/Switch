@@ -13,8 +13,7 @@ module.exports = {
 			.addFields(
 				{ name: 'Members', value: `${interaction.guild.memberCount}` },
 			)
-			.setTimestamp()
-			.setFooter('Footer text');
+			.setTimestamp();
 		await interaction.reply({ embeds: [embed] });
 	},
 };

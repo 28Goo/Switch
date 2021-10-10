@@ -1,0 +1,11 @@
+{
+    "client_id": "9590123653b44fe69cbde0443d7302ac",
+    "client_secret": "9c97ed76b10f480c8bcd24e186e46833",
+    "redirect_url": "http://127.0.0.1/index.html",
+    "access_token": "BQBq-XG_pSCM60295WJtnjW2kyH2LaJcBb2oDzJTVTyC2U6z3F6Lj2YqtOt8jvHLAtcSe-rklH5VLKcXNPeh54UiVR9u6eLDUPh61EyHEo3LwxdRriDqn5oGwk1ttaGeb91N0YFPlxDgNxVbFeZOodpGkHdPv3vxHR2eWA",
+    "refresh_token": "AQDGtuH7la-6RwYvPwG7x91UhCf6hJYkb1y1SL28XB47VHRYRP9AdU65jU6ObsXe0Trk0XRiZZUzoVovpWAEC_T_oI0o-c_Xu-1mE1XfwV6yFgKN11P_bUYtloCz0WROruQ",
+    "expires_in": 3600,
+    "expiry": 1633886707956,
+    "token_type": "Bearer",
+    "market": "PH"
+}
