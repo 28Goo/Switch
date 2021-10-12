@@ -1,8 +1,8 @@
 const { createAudioResource, createAudioPlayer, NoSubscriberBehavior, joinVoiceChannel } = require('@discordjs/voice');
 const play = require('play-dl');
 
-module.exports.yt = async (interaction, searched) => {
-	const stream = await play.stream(searched.url);
+module.exports.playMusic = async (interaction, query) => {
+	const stream = await play.stream(query);
 
 	const connection = joinVoiceChannel({
 		channelId: interaction.member.voice.channel.id,
@@ -21,4 +21,9 @@ module.exports.yt = async (interaction, searched) => {
 
 	player.play(resource);
 	connection.subscribe(player);
+
+	player.on('stateChange', (oldState, newState) => {
+		console.log(`Audio player transitioned from ${oldState.status} to ${newState.status}`);
+	});
 };
+

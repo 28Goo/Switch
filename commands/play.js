@@ -1,61 +1,61 @@
 const { MessageEmbed } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const play = require('play-dl');
-const { addEmbed } = require('../src/utils/embeds');
-const { yt } = require('../src/youtube');
+const { editEmbed } = require('../src/utils/embeds');
+const { playMusic } = require('../src/connect-play');
+const { userNotConntected } = require('../src/utils/not-connected');
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('play')
 		.setDescription('Play a song in a voice channel')
-		.addStringOption(option => option.setName('song')
-			.setDescription('Enter song name')
+		.addStringOption(option => option.setName('query')
+			.setDescription('Input a song or URL From Youtube or Spotify')
 			.setRequired(true)),
 	async execute(interaction) {
-		const voiceChannel = interaction.member.voice.channel;
+		const query = interaction.options.getString('query');
+		
 		const embed = new MessageEmbed();
 		const options = { limit: 1 };
 
-		if (!voiceChannel) {
-			embed.addField('You are not in a voice channel', 'Connect to a voice channel to use Switch.', true);
-			return interaction.reply({ embeds: [embed] });
-		}
+		if (userNotConntected(interaction)) return;
 
 		if (play.is_expired()) await play.refreshToken();
 
-		const songs = [];
-		const song = interaction.options.getString('song');
-		songs.push(song);
-		const check = await play.validate(song);
+		const queries = [];
+		queries.push(query);
+		const check = await play.validate(query);
 
 		if (!check) {
 			embed.addField('Invalid URL', 'Enter a valid URL', true);
 			return interaction.reply({ embeds: [embed] });
 		}
 		else if (check === 'yt_video') {
-			const video = await play.video_basic_info(song);
-			const [searched] = await play.search(video.video_details.title, options);
-			yt(interaction, searched);
+			playMusic(interaction, query);
+			const [search] = await play.search(query, options);
 			embed.setColor('#FF0000');
-			addEmbed.play(embed, searched, interaction);
+			editEmbed.play(embed, search, interaction);
 		}
 		else if (check === 'yt_playlist') {
-			console.log(`YT PLAYLIST: ${song}`);
+			console.log(`YT PLAYLIST: ${query}`);
 		}
 		else if (check === 'sp_track') {
-			console.log(`SP TRACK: ${song}`);
+			const track = await play.spotify(query);
+			const [search] = await play.search(track.name, options);
+			playMusic(interaction, search.url);
+			editEmbed.play(embed, search, interaction);
 		}
 		else if (check === 'sp_album') {
-			console.log(`SP ALBUM: ${song}`);
+			console.log(`SP ALBUM: ${query}`);
 		}
 		else if (check === 'sp_playlist') {
-			console.log(`SP PLAYLIST: ${song}`);
+			console.log(`SP PLAYLIST: ${query}`);
 		}
 		else if (check === 'search') {
-			const [searched] = await play.search(song, options);
-			yt(interaction, searched);
+			const [search] = await play.search(query, options);
+			playMusic(interaction, search.url);
 			embed.setColor('#FF0000');
-			addEmbed.play(embed, searched, interaction);
+			editEmbed.play(embed, search, interaction);
 		}
 		
 		await interaction.reply({ embeds: [embed] });
