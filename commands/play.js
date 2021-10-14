@@ -1,9 +1,12 @@
+// Libraries
 const { MessageEmbed } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const play = require('play-dl');
+// Own Exports
 const { editEmbed } = require('../src/utils/embeds');
 const { playMusic } = require('../src/connect-play');
 const { userNotConntected } = require('../src/utils/not-connected');
+const { youtube, spotify } = require('../src/utils/hex-values.json');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -30,26 +33,43 @@ module.exports = {
 			embed.addField('Invalid URL', 'Enter a valid URL', true);
 			return interaction.reply({ embeds: [embed] });
 		}
-		else if (check === 'yt_video') {
+
+		// QUEUE SYSTEM
+		// Create Map for Queue System with key as connecton and value as queue array
+		// Get query
+		// Check if valid URL
+		// If valid URL, do the following {
+		// check if connection already created in specific guild
+		// if no connection: create connection; else: get connection of guild by iterating through the map;
+		// } 
+		// Get 1st item in Queue of specific guild
+		// Run Platform Checker Function and Play Music
+		// Check state of Player (if idle, getNextResource)
+
+		if (check === 'yt_video') {
 			playMusic(interaction, query);
 			const [search] = await play.search(query, options);
-			embed.setColor('#FF0000');
+			embed.setColor(youtube);
 			editEmbed.play(embed, search, interaction);
 		}
 		else if (check === 'yt_playlist') {
 			console.log(`YT PLAYLIST: ${query}`);
+			embed.setColor(youtube);
 		}
 		else if (check === 'sp_track') {
 			const track = await play.spotify(query);
 			const [search] = await play.search(track.name, options);
 			playMusic(interaction, search.url);
+			embed.setColor(spotify);
 			editEmbed.play(embed, search, interaction);
 		}
 		else if (check === 'sp_album') {
 			console.log(`SP ALBUM: ${query}`);
+			embed.setColor(spotify);
 		}
 		else if (check === 'sp_playlist') {
 			console.log(`SP PLAYLIST: ${query}`);
+			embed.setColor(spotify);
 		}
 		else if (check === 'search') {
 			const [search] = await play.search(query, options);

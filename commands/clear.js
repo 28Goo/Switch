@@ -6,21 +6,21 @@ const { userNotConntected, botNotConnected } = require('../src/utils/not-connect
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('resume')
-		.setDescription('Resumes the music.'),
+		.setName('clear')
+		.setDescription('Clears the queue.'),
 	async execute(interaction) {
 		if (userNotConntected(interaction)) return;
-
+		
 		const connection = getVoiceConnection(interaction.guild.id);
 
 		if (botNotConnected(interaction, connection)) return;
 
 		const player = connection.state.subscription.player;
 		connection.subscribe(player);
-		player.unpause();
+		player.stop();
 
 		const embed = new MessageEmbed();
-		editEmbed.resume(embed, interaction);
+		editEmbed.stop(embed, interaction);
 		await interaction.reply({ embeds: [embed] });
 	},
 };

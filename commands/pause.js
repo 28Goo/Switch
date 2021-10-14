@@ -7,7 +7,7 @@ const { userNotConntected, botNotConnected } = require('../src/utils/not-connect
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('pause')
-		.setDescription('Pause song from playing.'),
+		.setDescription('Pauses song from playing.'),
 	async execute(interaction) {
 		if (userNotConntected(interaction)) return;
 

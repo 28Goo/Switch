@@ -23,7 +23,7 @@ module.exports.playMusic = async (interaction, query) => {
 	connection.subscribe(player);
 
 	player.on('stateChange', (oldState, newState) => {
-		console.log(`Audio player transitioned from ${oldState.status} to ${newState.status}`);
+		console.log(`Switch transitioned from ${oldState.status} to ${newState.status}`);
 	});
 };
 

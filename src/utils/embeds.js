@@ -17,6 +17,9 @@ module.exports.editEmbed = {
 	resume: (embed, interaction) => {
 		embed.setDescription(`Switch has been resumed by ${interaction.member}`);
 	},
+	stop: (embed, interaction) => {
+		embed.setDescription(`Switch has been cleared by ${interaction.member}`);
+	},
 	userNotConnected: (embed) => {
 		embed.addField('You are not in a voice channel', 'Connect to a voice channel to use Switch.', true);
 	},
