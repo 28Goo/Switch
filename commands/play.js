@@ -5,10 +5,9 @@ const play = require('play-dl');
 
 // Own Exports
 const { editEmbed } = require('../src/utils/embeds');
-const { playMusic } = require('../src/connect-play');
 const { userNotConntected } = require('../src/utils/not-connected');
 const { youtube, spotify } = require('../src/utils/hex-values.json');
-const { getVoiceConnection, joinVoiceChannel } = require('@discordjs/voice');
+const { getVoiceConnection, joinVoiceChannel, createAudioResource, createAudioPlayer, NoSubscriberBehavior } = require('@discordjs/voice');
 const { setQueue, getSongs, addSongToQueue } = require('../src/queue-system');
 const { addCounter } = require('../src/utils/position');
 
@@ -48,23 +47,21 @@ module.exports = {
 		// Check state of Player (if idle, getNextResource)
 
 		const guild = interaction.guild.id;
-		const connection = getVoiceConnection(interaction.guild.id);
+		let connection = getVoiceConnection(interaction.guild.id);
 
 		if (!connection) {
-			const setConnection = joinVoiceChannel({
+			connection = joinVoiceChannel({
 				channelId: interaction.member.voice.channel.id,
 				guildId: interaction.guild.id,
 				adapterCreator: interaction.guild.voiceAdapterCreator,
 			});
 
-			setQueue(guild, setConnection);
+			setQueue(guild, connection);
 		}
 
-		const songs = await addSongToQueue(guild, query);
-
 		if (check === 'yt_video') {
-			playMusic(interaction, songs, position);
 			const [search] = await play.search(query, options);
+			addSongToQueue(guild, search.url);
 			embed.setColor(youtube);
 			editEmbed.play(embed, search, interaction);
 		}
@@ -75,7 +72,7 @@ module.exports = {
 		else if (check === 'sp_track') {
 			const track = await play.spotify(query);
 			const [search] = await play.search(track.name, options);
-			playMusic(interaction, songs, position);
+			addSongToQueue(guild, search.url);
 			embed.setColor(spotify);
 			editEmbed.play(embed, search, interaction);
 		}
@@ -89,17 +86,31 @@ module.exports = {
 		}
 		else if (check === 'search') {
 			const [search] = await play.search(query, options);
-			playMusic(interaction, songs, position);
+			addSongToQueue(guild, search.url);
 			embed.setColor('#FF0000');
 			editEmbed.play(embed, search, interaction);
 		}
+
+		const songs = getSongs(guild);
+
+		const stream = await play.stream(songs[position]);
+
+		const resource = createAudioResource(stream.stream, {
+			inputType: stream.type,
+		});
+
+		const player = createAudioPlayer({
+			behaviors: NoSubscriberBehavior.Play,
+		});
 		
-		if (songs.length > 1) {
-			await interaction.reply('Added to Queue');
-		}
-		else if (query || (songs.length > 1 && !query)) {
-			await interaction.reply({ embeds: [embed] });
-		}
-		// await interaction.reply('Working');
+		player.play(resource);
+
+		connection.subscribe(player);
+
+		player.on('stateChange', (oldState, newState) => {
+			console.log(`Switch transitioned from ${oldState.status} to ${newState.status}`);
+		});
+
+		console.log(interaction);
 	},
 };

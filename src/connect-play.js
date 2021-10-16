@@ -1,6 +1,5 @@
 const { createAudioResource, createAudioPlayer, NoSubscriberBehavior, getVoiceConnection } = require('@discordjs/voice');
 const play = require('play-dl');
-const { execute } = require('../commands/play');
 
 module.exports.playMusic = async (interaction, queue, position) => {
 	console.log('Working');
@@ -27,12 +26,10 @@ module.exports.playMusic = async (interaction, queue, position) => {
 		console.log(`Switch transitioned from ${oldState.status} to ${newState.status}`);
 
 		if (oldState === 'playing' && newState === 'idle') {
-			execute(interaction);
+			// execute(interaction);
 		}
 	});
 
 	player.play(resource);
 	connection.subscribe(player);
-
-	
 };
