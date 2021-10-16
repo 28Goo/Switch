@@ -10,7 +10,6 @@ module.exports.editEmbed = {
 		.setThumbnail(search.channel.icon.url)
 		.setImage(search.thumbnail.url);
 	},
-	// playYtSearch: (embed, )
 	pause: (embed, inteaction) => {
 		embed.setDescription(`Switch has been paused by ${inteaction.member}.`);
 	},
