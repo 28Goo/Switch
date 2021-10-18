@@ -21,6 +21,7 @@ module.exports = {
 		
 		const embed = new MessageEmbed();
 		editEmbed.pause(embed, interaction);
-		await interaction.reply({ embeds: [embed] });
+		await interaction.deferReply();
+		await interaction.followUp({ embeds: [embed] });
 	},
 };

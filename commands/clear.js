@@ -1,6 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { getVoiceConnection } = require('@discordjs/voice');
 const { MessageEmbed } = require('discord.js');
+const { clearQueue } = require('../src/queue-system');
 const { editEmbed } = require('../src/utils/embeds');
 const { userNotConntected, botNotConnected } = require('../src/utils/not-connected');
 
@@ -11,16 +12,21 @@ module.exports = {
 	async execute(interaction) {
 		if (userNotConntected(interaction)) return;
 		
-		const connection = getVoiceConnection(interaction.guild.id);
+		const guild = interaction.guild.id;
+		const connection = getVoiceConnection(guild);
 
 		if (botNotConnected(interaction, connection)) return;
+		
+		await interaction.deferReply();
 
+		clearQueue(guild);
 		const player = connection.state.subscription.player;
-		connection.subscribe(player);
 		player.stop();
+		connection.subscribe(player);
+
 
 		const embed = new MessageEmbed();
-		editEmbed.stop(embed, interaction);
-		await interaction.reply({ embeds: [embed] });
+		editEmbed.clear(embed, interaction);
+		await interaction.followUp({ embeds: [embed] });
 	},
 };

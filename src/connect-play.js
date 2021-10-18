@@ -1,35 +1,49 @@
 const { createAudioResource, createAudioPlayer, NoSubscriberBehavior, getVoiceConnection } = require('@discordjs/voice');
+const { MessageEmbed } = require('discord.js');
 const play = require('play-dl');
+const { clearQueue, getSongs } = require('./queue-system');
+const { editEmbed } = require('./utils/embeds');
 
-module.exports.playMusic = async (interaction, queue, position) => {
-	console.log('Working');
+const embed = new MessageEmbed();
 
-	const stream = await play.stream(queue[position]);
+let position = 0;
+
+module.exports.playMusic = async (interaction, songs) => {
 
 	const connection = getVoiceConnection(interaction.guild.id);
 
-	// const playerState = connection.state.subscription.player;
-	// console.log(playerState);
-
+	const stream = await play.stream(songs[position]);
+	
 	const resource = createAudioResource(stream.stream, {
 		inputType: stream.type,
 	});
-	const player = createAudioPlayer({
-		behaviors: {
-			noSubscriber: NoSubscriberBehavior.Play,
-		},
-	});
 
-	if (queue.length > 1) return;
+	const player = createAudioPlayer({
+		behaviors: NoSubscriberBehavior.Play,
+	});
 	
-	player.on('stateChange', (oldState, newState) => {
+	player.play(resource);
+
+	connection.subscribe(player);
+
+	player.on('stateChange', async (oldState, newState) => {
 		console.log(`Switch transitioned from ${oldState.status} to ${newState.status}`);
 
-		if (oldState === 'playing' && newState === 'idle') {
-			// execute(interaction);
+		if (oldState.status === 'playing' && newState.status === 'idle') {
+			const queue = getSongs(interaction.guild.id);
+			position++;
+
+			if (!queue[position]) {
+				position = 0;
+				clearQueue(interaction.guild.id);
+				return;
+			}
+
+			this.playMusic(interaction, queue);
+			const [songDetails] = await play.search(queue[position], { limit: 1 });
+			editEmbed.play(embed, songDetails, interaction);
+			
+			await interaction.editReply({ embeds: [embed] });
 		}
 	});
-
-	player.play(resource);
-	connection.subscribe(player);
 };

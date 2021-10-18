@@ -9,8 +9,7 @@ const client = new Client({ intents: [
 	Intents.FLAGS.GUILDS,
 	Intents.FLAGS.GUILD_MESSAGES,
 	Intents.FLAGS.GUILD_VOICE_STATES,
-	Intents.FLAGS.DIRECT_MESSAGES,
-], partials: ['CHANNEL', 'MESSAGE'] });
+] });
 
 client.commands = new Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
@@ -40,7 +39,7 @@ client.on('interactionCreate', async interaction => {
 		const embed = new MessageEmbed();
 		editEmbed.error(embed);
 		console.error(error);
-		await interaction.reply({ embeds: [embed], ephemeral:true });
+		await interaction.followUp({ embeds: [embed], ephemeral:true });
 	}
 });
 

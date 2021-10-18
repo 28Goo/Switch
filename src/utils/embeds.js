@@ -2,13 +2,28 @@ module.exports.editEmbed = {
 	play: (embed, search, interaction) => {
 		embed.setTitle('Now Playing')
 		.setDescription(`[${search.title}](${search.url})`)
-		.addFields(
+		.setFields(
 			{ name: 'Duration:', value: search.durationRaw, inline:true },
 			{ name: 'Channel:', value: `[${search.channel.name}](${search.channel.url})`, inline:true },
-			{ name: 'Queued by:', value: `${interaction.member}`, inline:true },
+			{ name: 'Queued by:', value: `${interaction.user}`, inline:true },
 		)
 		.setThumbnail(search.channel.icon.url)
 		.setImage(search.thumbnail.url);
+	},
+	addedToQueue: (embed, search, interaction) => {
+		embed.setTitle('Added To Queue')
+		.setDescription(`[${search.title}](${search.url})`)
+		.setFooter(`Added by: ${interaction.user.username}`, interaction.user.displayAvatarURL());
+	},
+	playlist: (embed, search, interaction) => {
+		embed.setTitle('Playlist Added')
+		.setFields(
+			{ name: 'Playlist:', value: `[${search.name}](${search.url})`, inline: true },
+			{ name: 'Owner:', value: `[${search.owner.name}](${search.owner.url})`, inline:true },
+			{ name: 'Track Count:', value: `${search.tracksCount}`, inline: true },
+		)
+		.setThumbnail(search.thumbnail.url)
+		.setFooter(`Added by ${interaction.user.username}`, interaction.user.displayAvatarURL());
 	},
 	pause: (embed, inteaction) => {
 		embed.setDescription(`Switch has been paused by ${inteaction.member}.`);
@@ -16,7 +31,10 @@ module.exports.editEmbed = {
 	resume: (embed, interaction) => {
 		embed.setDescription(`Switch has been resumed by ${interaction.member}`);
 	},
-	stop: (embed, interaction) => {
+	skip: (embed, interaction) => {
+		embed.setDescription(`Track has been skipped by ${interaction.member}`);
+	},
+	clear: (embed, interaction) => {
 		embed.setDescription(`Switch has been cleared by ${interaction.member}`);
 	},
 	userNotConnected: (embed) => {
