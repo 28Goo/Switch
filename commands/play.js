@@ -48,22 +48,22 @@ module.exports = {
 			setQueue(guild, connection);
 		}
 
-		let search, playlist;
+		let search;
 
 		if (check === 'yt_video' || check === 'search') {
 			addSongToQueue(guild, query);
 			[search] = await play.search(query, { limit:1 });
 		}
 		else if (check === 'yt_playlist') {
-			playlist = await play.playlist_info(query);
-			const tracks = playlist.page(1);
+			search = await play.playlist_info(query);
+			const tracks = search.page(1);
 
 			for (const track of tracks) {
 				const songTitle = track.title;
 				addSongToQueue(guild, songTitle);
 			}
 			
-			editEmbed.youtubePlaylist(embed, playlist, interaction);
+			editEmbed.youtubePlaylist(embed, search, interaction);
 		}
 		else if (check === 'sp_track') {
 			const track = await play.spotify(query);
@@ -72,34 +72,50 @@ module.exports = {
 			[search] = await play.search(songDetails, { limit:1 });
 		}
 		else if (check === 'sp_playlist' || check === 'sp_album') {
-			playlist = await play.spotify(query);
-			const tracks = playlist.page(1);
+			search = await play.spotify(query);
+			const tracks = search.page(1);
 
 			for (const track of tracks) {
 				const songDetails = `${track.name} ${track.artists[0].name}`;
 				addSongToQueue(guild, songDetails);
 			}
 		}
-
-		if (!playlist) {
-			editEmbed.invalidUrl(embed);
-			await interaction.followUp({ embeds: [embed] });
-			return;
-		}
 		
 		const songs = getSongs(guild);
 
-		if (songs.length > 1 && check !== 'sp_playlist') {
-			editEmbed.addedToQueue(embed, search, interaction);
-		}
-		else if (songs.length === 1) {
+		if (songs.length === 1) {
 			editEmbed.play(embed, search, interaction);
 		}
-		else if (check === 'sp_playlist') {
-			editEmbed.spotifyPlaylist(embed, playlist, interaction);
+		const subscription = connection.state.subscription;
+		
+		if (subscription) {
+			const playerStatus = subscription.player.state.status;
+			if (playerStatus === 'playing' && (check === 'search' || check === 'sp_track' || check === 'yt_video')) {
+				editEmbed.addedToQueue(embed, search, interaction);
+				await interaction.followUp({ embeds: [embed] });
+				return;
+			}
+			else if (playerStatus === 'playing' && check === 'sp_playlist') {
+				editEmbed.spotifyPlaylist(embed, search, interaction);
+				await interaction.followUp({ embeds: [embed] });
+				return;
+			}
+			else if (playerStatus === 'playing' && check === 'sp_album') {
+				editEmbed.spotifyAlbum(embed, search, interaction);
+				await interaction.followUp({ embeds: [embed] });
+				return;
+			}
+			else if (playerStatus === 'playing' && check === 'yt_playlist') {
+				editEmbed.spotifyAlbum(embed, search, interaction);
+				await interaction.followUp({ embeds: [embed] });
+				return;
+			}
+		}
+		if (check === 'sp_playlist') {
+			editEmbed.spotifyPlaylist(embed, search, interaction);
 		}
 		else if (check === 'sp_album') {
-			editEmbed.spotifyAlbum(embed, playlist, interaction);
+			editEmbed.spotifyAlbum(embed, search, interaction);
 		}
 
 		await interaction.followUp({ embeds: [embed] });
