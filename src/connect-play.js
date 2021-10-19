@@ -12,7 +12,9 @@ module.exports.playMusic = async (interaction, songs) => {
 
 	const connection = getVoiceConnection(interaction.guild.id);
 
-	const stream = await play.stream(songs[position]);
+	const [track] = await play.search(songs[position], { limit: 1 });
+
+	const stream = await play.stream(track.url);
 	
 	const resource = createAudioResource(stream.stream, {
 		inputType: stream.type,
@@ -40,10 +42,11 @@ module.exports.playMusic = async (interaction, songs) => {
 			}
 
 			this.playMusic(interaction, queue);
-			const [songDetails] = await play.search(queue[position], { limit: 1 });
-			editEmbed.play(embed, songDetails, interaction);
+			const [nextTrack] = await play.search(queue[position], { limit: 1 });
+			editEmbed.play(embed, nextTrack, interaction);
 			
-			await interaction.editReply({ embeds: [embed] });
+			interaction.fetchReply()
+			.then(reply => reply.edit({ embeds: [embed] }));
 		}
 	});
 };

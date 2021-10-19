@@ -48,21 +48,20 @@ module.exports = {
 			setQueue(guild, connection);
 		}
 
-		const options = { limit: 1 };
-
-		let search;
 		let playlist;
+		let search;
 
-		if (check === 'yt_video') {
-			[search] = await play.search(query, options);
-			addSongToQueue(guild, search.url);
+		if (check === 'yt_video' || check === 'search') {
+			addSongToQueue(guild, query);
+			[search] = await play.search(query, { limit:1 });
 		}
 		// else if (check === 'yt_playlist') {
 		// }
 		else if (check === 'sp_track') {
 			const track = await play.spotify(query);
-			[search] = await play.search(`${track.name} ${track.artists[0].name}`, options);
-			addSongToQueue(guild, search.url);
+			const songDetails = `${track.name} ${track.artists[0].name}`;
+			addSongToQueue(guild, songDetails);
+			[search] = await play.search(songDetails, { limit:1 });
 		}
 		// else if (check === 'sp_album') {
 		// }
@@ -70,25 +69,22 @@ module.exports = {
 			playlist = await play.spotify(query);
 			const tracks = playlist.page(1);
 			for (const track of tracks) {
-				const [data] = await play.search(`${track.name} ${track.artists[0].name}`, options);
-				addSongToQueue(guild, data.url);
+				const songDetails = `${track.name} ${track.artists[0].name}`;
+				addSongToQueue(guild, songDetails);
 			}
-		}
-		else if (check === 'search') {
-			[search] = await play.search(query, options);
-			addSongToQueue(guild, search.url);
 		}
 		
 		const songs = getSongs(guild);
 		console.log(songs);
 		
-		if (songs.length === 1) {
-			await playMusic(interaction, songs);
-			editEmbed.play(embed, search, interaction);
-		}
-		else if (check === 'sp_playlist') {
-			await playMusic(interaction, songs);
+		if (check === 'sp_playlist') {
 			editEmbed.playlist(embed, playlist, interaction);
+			await playMusic(interaction, songs);
+		}
+
+		if (songs.length === 1) {
+			editEmbed.play(embed, search, interaction);
+			await playMusic(interaction, songs);
 		}
 		else if (songs.length > 1 && check !== 'sp_playlist') {
 			editEmbed.addedToQueue(embed, search, interaction);
