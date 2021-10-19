@@ -86,6 +86,13 @@ module.exports = {
 		if (songs.length === 1) {
 			editEmbed.play(embed, search, interaction);
 		}
+		else if (check === 'sp_playlist') {
+			editEmbed.spotifyPlaylist(embed, search, interaction);
+		}
+		else if (check === 'sp_album') {
+			editEmbed.spotifyAlbum(embed, search, interaction);
+		}
+
 		const subscription = connection.state.subscription;
 		
 		if (subscription) {
@@ -110,12 +117,7 @@ module.exports = {
 				await interaction.followUp({ embeds: [embed] });
 				return;
 			}
-		}
-		if (check === 'sp_playlist') {
-			editEmbed.spotifyPlaylist(embed, search, interaction);
-		}
-		else if (check === 'sp_album') {
-			editEmbed.spotifyAlbum(embed, search, interaction);
+			
 		}
 
 		await interaction.followUp({ embeds: [embed] });

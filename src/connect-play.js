@@ -1,19 +1,17 @@
 const { createAudioResource, createAudioPlayer, NoSubscriberBehavior, getVoiceConnection } = require('@discordjs/voice');
 const { MessageEmbed } = require('discord.js');
 const play = require('play-dl');
-const { clearQueue, getSongs } = require('./queue-system');
+const { getSongs } = require('./queue-system');
 const { editEmbed } = require('./utils/embeds');
 
 const embed = new MessageEmbed();
-
-let position = 0;
 
 module.exports.playMusic = async (interaction) => {
 	const guild = interaction.guild.id;
 	const songs = getSongs(guild);
 	const connection = getVoiceConnection(guild);
 
-	const [track] = await play.search(songs[position], { limit: 1 });
+	const [track] = await play.search(songs[0], { limit: 1 });
 
 	const stream = await play.stream(track.url);
 	
@@ -34,17 +32,16 @@ module.exports.playMusic = async (interaction) => {
 
 		if (oldState.status === 'playing' && newState.status === 'idle') {
 			const queue = getSongs(guild);
-			position++;
-
-			if (!queue[position]) {
-				position = 0;
-				clearQueue(guild);
+			queue.shift();
+			
+			if (!queue[0]) {
+				player.stop();
 				return;
 			}
 
 			this.playMusic(interaction, queue);
-			const [nextTrack] = await play.search(queue[position], { limit: 1 });
-			editEmbed.play(embed, nextTrack, interaction);
+			const [nextSong] = await play.search(songs[0], { limit: 1 });
+			editEmbed.play(embed, nextSong, interaction);
 			interaction.channel.send({ embeds: [embed] });
 		}
 	});
