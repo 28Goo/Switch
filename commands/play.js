@@ -21,20 +21,19 @@ module.exports = {
 		const query = interaction.options.getString('query');
 		const embed = new MessageEmbed();
 
+		await interaction.deferReply();
+
 		if (userNotConntected(interaction)) return;
 
 		if (play.is_expired()) await play.refreshToken();
 
 		const check = await play.validate(query);
 
-		await interaction.deferReply();
-
 		if (!check) {
 			editEmbed.invalidUrl(embed);
 			await interaction.followUp({ embeds: [embed] });
 			return;
 		}
-
 
 		const guild = interaction.guild.id;
 		let connection = getVoiceConnection(interaction.guild.id);
@@ -58,10 +57,13 @@ module.exports = {
 		else if (check === 'yt_playlist') {
 			playlist = await play.playlist_info(query);
 			const tracks = playlist.page(1);
+
 			for (const track of tracks) {
 				const songTitle = track.title;
 				addSongToQueue(guild, songTitle);
 			}
+			
+			editEmbed.youtubePlaylist(embed, playlist, interaction);
 		}
 		else if (check === 'sp_track') {
 			const track = await play.spotify(query);
@@ -72,40 +74,35 @@ module.exports = {
 		else if (check === 'sp_playlist' || check === 'sp_album') {
 			playlist = await play.spotify(query);
 			const tracks = playlist.page(1);
+
 			for (const track of tracks) {
 				const songDetails = `${track.name} ${track.artists[0].name}`;
 				addSongToQueue(guild, songDetails);
 			}
 		}
-		
-		const songs = getSongs(guild);
-		
-		if (songs.length === 1) {
-			editEmbed.play(embed, search, interaction);
-			await playMusic(interaction);
-		}
-		else if (check === 'yt_playlist') {
-			editEmbed.youtubePlaylist(embed, playlist, interaction);
-			await playMusic(interaction);
-		}
-		else if (check === 'sp_playlist') {
-			editEmbed.spotifyPlaylist(embed, playlist, interaction);
-			await playMusic(interaction);
-		}
-		else if (check === 'sp_album') {
-			editEmbed.spotifyAlbum(embed, playlist, interaction);
-			await playMusic(interaction);
-		}
-		else if (!playlist) {
+
+		if (!playlist) {
 			editEmbed.invalidUrl(embed);
 			await interaction.followUp({ embeds: [embed] });
 			return;
 		}
+		
+		const songs = getSongs(guild);
 
-		else if (songs.length > 1 && check !== 'sp_playlist') {
+		if (songs.length > 1 && check !== 'sp_playlist') {
 			editEmbed.addedToQueue(embed, search, interaction);
+		}
+		else if (songs.length === 1) {
+			editEmbed.play(embed, search, interaction);
+		}
+		else if (check === 'sp_playlist') {
+			editEmbed.spotifyPlaylist(embed, playlist, interaction);
+		}
+		else if (check === 'sp_album') {
+			editEmbed.spotifyAlbum(embed, playlist, interaction);
 		}
 
 		await interaction.followUp({ embeds: [embed] });
+		await playMusic(interaction);
 	},
 };

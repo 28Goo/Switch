@@ -45,12 +45,7 @@ module.exports.playMusic = async (interaction) => {
 			this.playMusic(interaction, queue);
 			const [nextTrack] = await play.search(queue[position], { limit: 1 });
 			editEmbed.play(embed, nextTrack, interaction);
-			
-			interaction.fetchReply()
-			.then(async reply => {
-				if (!reply) await interaction.channel.send({ embeds: [embed] });
-				reply.edit({ embeds: [embed] });
-			});
+			interaction.channel.send({ embeds: [embed] });
 		}
 	});
 };

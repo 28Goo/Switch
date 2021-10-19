@@ -7,8 +7,8 @@ module.exports.editEmbed = {
 			{ name: 'Channel:', value: `[${search.channel.name}](${search.channel.url})`, inline:true },
 			{ name: 'Queued by:', value: `${interaction.user}`, inline:true },
 		)
-		.setThumbnail(search.channel.icon.url)
-		.setImage(search.thumbnail.url);
+		.setThumbnail(search.thumbnail.url)
+		.setFooter(`Added by ${interaction.user.username}`, interaction.user.displayAvatarURL());
 	},
 	addedToQueue: (embed, search, interaction) => {
 		embed.setTitle('Added To Queue')
