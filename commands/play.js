@@ -55,8 +55,14 @@ module.exports = {
 			addSongToQueue(guild, query);
 			[search] = await play.search(query, { limit:1 });
 		}
-		// else if (check === 'yt_playlist') {
-		// }
+		else if (check === 'yt_playlist') {
+			playlist = await play.playlist_info(query);
+			const tracks = playlist.page(1);
+			for (const track of tracks) {
+				const songTitle = track.title;
+				addSongToQueue(guild, songTitle);
+			}
+		}
 		else if (check === 'sp_track') {
 			const track = await play.spotify(query);
 			const songDetails = `${track.name} ${track.artists[0].name}`;
@@ -73,17 +79,21 @@ module.exports = {
 		}
 		
 		const songs = getSongs(guild);
-
+		
 		if (songs.length === 1) {
 			editEmbed.play(embed, search, interaction);
 			await playMusic(interaction);
 		}
+		else if (check === 'yt_playlist') {
+			editEmbed.youtubePlaylist(embed, playlist, interaction);
+			await playMusic(interaction);
+		}
 		else if (check === 'sp_playlist') {
-			editEmbed.playlist(embed, playlist, interaction);
+			editEmbed.spotifyPlaylist(embed, playlist, interaction);
 			await playMusic(interaction);
 		}
 		else if (check === 'sp_album') {
-			editEmbed.album(embed, playlist, interaction);
+			editEmbed.spotifyAlbum(embed, playlist, interaction);
 			await playMusic(interaction);
 		}
 		else if (!playlist) {

@@ -28,7 +28,6 @@ module.exports = {
 			queue[newPosition] = placeholder;
 		}
 
-		console.log(queue);
 		const embed = new MessageEmbed();
 		editEmbed.shuffle(embed, interaction);
 		await interaction.followUp({ embeds: [embed] });

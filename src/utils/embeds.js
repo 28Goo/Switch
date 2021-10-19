@@ -15,25 +15,35 @@ module.exports.editEmbed = {
 		.setDescription(`[${search.title}](${search.url})`)
 		.setFooter(`Added by: ${interaction.user.username}`, interaction.user.displayAvatarURL());
 	},
-	playlist: (embed, search, interaction) => {
-		embed.setTitle('Playlist Added')
-		.setFields(
-			{ name: 'Playlist:', value: `[${search.name}](${search.url})`, inline: true },
-			{ name: 'Owner:', value: `[${search.owner.name}](${search.owner.url})`, inline:true },
-			{ name: 'Track Count:', value: `${search.tracksCount}`, inline: true },
-		)
-		.setThumbnail(search.thumbnail.url)
-		.setFooter(`Added by ${interaction.user.username}`, interaction.user.displayAvatarURL());
+	youtubePlaylist: (embed, playlist, interaction) => {
+		embed.setTitle('Youtube Playlist Added')
+			.setFields(
+				{ name: 'Playlist:', value: `[${playlist.title}](${playlist.url})`, inline: true },
+				{ name: 'Channel:', value: `[${playlist.channel.name}](${playlist.channel.url})`, inline: true },
+				{ name: 'Track Count:', value: `${playlist.videoCount}`, inline: true },
+			)
+			.setThumbnail(playlist.thumbnail.url)
+			.setFooter(`Added by ${interaction.user.username}`, interaction.user.displayAvatarURL());
 	},
-	album: (embed, search, interaction) => {
-		embed.setTitle('Album Added')
-		.setFields(
-			{ name: 'Album:', value: `[${search.name}](${search.url})`, inline: true },
-			{ name: 'Artist:', value: `[${search.artists[0].name}](${search.artists[0].url})`, inline:true },
-			{ name: 'Track Count:', value: `${search.trackCount}`, inline: true },
-		)
-		.setThumbnail(search.thumbnail.url)
-		.setFooter(`Added by ${interaction.user.username}`, interaction.user.displayAvatarURL());
+	spotifyPlaylist: (embed, playlist, interaction) => {
+		embed.setTitle('Spotify Playlist Added')
+			.setFields(
+				{ name: 'Playlist:', value: `[${playlist.name}](${playlist.url})`, inline: true },
+				{ name: 'Owner:', value: `[${playlist.owner.name}](${playlist.owner.url})`, inline:true },
+				{ name: 'Track Count:', value: `${playlist.tracksCount}`, inline: true },
+			)
+			.setThumbnail(playlist.thumbnail.url)
+			.setFooter(`Added by ${interaction.user.username}`, interaction.user.displayAvatarURL());
+	},
+	spotifyAlbum: (embed, album, interaction) => {
+		embed.setTitle('Spotify Album Added')
+			.setFields(
+				{ name: 'Album:', value: `[${album.name}](${album.url})`, inline: true },
+				{ name: 'Artist:', value: `[${album.artists[0].name}](${album.artists[0].url})`, inline:true },
+				{ name: 'Track Count:', value: `${album.trackCount}`, inline: true },
+			)
+			.setThumbnail(album.thumbnail.url)
+			.setFooter(`Added by ${interaction.user.username}`, interaction.user.displayAvatarURL());
 	},
 	pause: (embed, inteaction) => {
 		embed.setDescription(`Switch has been paused by ${inteaction.member}.`);
