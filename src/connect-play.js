@@ -8,9 +8,10 @@ const embed = new MessageEmbed();
 
 let position = 0;
 
-module.exports.playMusic = async (interaction, songs) => {
-
-	const connection = getVoiceConnection(interaction.guild.id);
+module.exports.playMusic = async (interaction) => {
+	const guild = interaction.guild.id;
+	const songs = getSongs(guild);
+	const connection = getVoiceConnection(guild);
 
 	const [track] = await play.search(songs[position], { limit: 1 });
 
@@ -32,12 +33,12 @@ module.exports.playMusic = async (interaction, songs) => {
 		console.log(`Switch transitioned from ${oldState.status} to ${newState.status}`);
 
 		if (oldState.status === 'playing' && newState.status === 'idle') {
-			const queue = getSongs(interaction.guild.id);
+			const queue = getSongs(guild);
 			position++;
 
 			if (!queue[position]) {
 				position = 0;
-				clearQueue(interaction.guild.id);
+				clearQueue(guild);
 				return;
 			}
 
@@ -46,7 +47,10 @@ module.exports.playMusic = async (interaction, songs) => {
 			editEmbed.play(embed, nextTrack, interaction);
 			
 			interaction.fetchReply()
-			.then(reply => reply.edit({ embeds: [embed] }));
+			.then(async reply => {
+				if (!reply) await interaction.channel.send({ embeds: [embed] });
+				reply.edit({ embeds: [embed] });
+			});
 		}
 	});
 };

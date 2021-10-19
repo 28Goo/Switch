@@ -27,13 +27,14 @@ module.exports = {
 
 		const check = await play.validate(query);
 
+		await interaction.deferReply();
+
 		if (!check) {
-			embed.addField('Invalid URL', 'Enter a valid URL', true);
-			interaction.reply({ embeds: [embed] });
+			editEmbed.invalidUrl(embed);
+			await interaction.followUp({ embeds: [embed] });
 			return;
 		}
 
-		await interaction.deferReply();
 
 		const guild = interaction.guild.id;
 		let connection = getVoiceConnection(interaction.guild.id);
@@ -48,8 +49,7 @@ module.exports = {
 			setQueue(guild, connection);
 		}
 
-		let playlist;
-		let search;
+		let search, playlist;
 
 		if (check === 'yt_video' || check === 'search') {
 			addSongToQueue(guild, query);
@@ -63,9 +63,7 @@ module.exports = {
 			addSongToQueue(guild, songDetails);
 			[search] = await play.search(songDetails, { limit:1 });
 		}
-		// else if (check === 'sp_album') {
-		// }
-		else if (check === 'sp_playlist') {
+		else if (check === 'sp_playlist' || check === 'sp_album') {
 			playlist = await play.spotify(query);
 			const tracks = playlist.page(1);
 			for (const track of tracks) {
@@ -75,17 +73,25 @@ module.exports = {
 		}
 		
 		const songs = getSongs(guild);
-		console.log(songs);
-		
-		if (check === 'sp_playlist') {
-			editEmbed.playlist(embed, playlist, interaction);
-			await playMusic(interaction, songs);
-		}
 
 		if (songs.length === 1) {
 			editEmbed.play(embed, search, interaction);
-			await playMusic(interaction, songs);
+			await playMusic(interaction);
 		}
+		else if (check === 'sp_playlist') {
+			editEmbed.playlist(embed, playlist, interaction);
+			await playMusic(interaction);
+		}
+		else if (check === 'sp_album') {
+			editEmbed.album(embed, playlist, interaction);
+			await playMusic(interaction);
+		}
+		else if (!playlist) {
+			editEmbed.invalidUrl(embed);
+			await interaction.followUp({ embeds: [embed] });
+			return;
+		}
+
 		else if (songs.length > 1 && check !== 'sp_playlist') {
 			editEmbed.addedToQueue(embed, search, interaction);
 		}
