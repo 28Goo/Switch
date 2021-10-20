@@ -113,14 +113,14 @@ module.exports = {
 				return;
 			}
 			else if (playerStatus === 'playing' && check === 'yt_playlist') {
-				editEmbed.spotifyAlbum(embed, search, interaction);
+				editEmbed.youtubePlaylist(embed, search, interaction);
 				await interaction.followUp({ embeds: [embed] });
 				return;
 			}
 			
 		}
 
-		await interaction.followUp({ embeds: [embed] });
 		await playMusic(interaction);
+		await interaction.followUp({ embeds: [embed] });
 	},
 };

@@ -10,6 +10,8 @@ module.exports = {
 		.setName('clear')
 		.setDescription('Clears the queue.'),
 	async execute(interaction) {
+		await interaction.deferReply();
+
 		if (userNotConntected(interaction)) return;
 		
 		const guild = interaction.guild.id;
@@ -17,13 +19,9 @@ module.exports = {
 
 		if (botNotConnected(interaction, connection)) return;
 		
-		await interaction.deferReply();
-
 		clearQueue(guild);
 		const player = connection.state.subscription.player;
 		player.stop();
-		connection.subscribe(player);
-
 
 		const embed = new MessageEmbed();
 		editEmbed.clear(embed, interaction);

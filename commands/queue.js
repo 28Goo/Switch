@@ -1,14 +1,15 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { getVoiceConnection } = require('@discordjs/voice');
-const { MessageEmbed } = require('discord.js');
 const { getSongs } = require('../src/queue-system');
-const { editEmbed } = require('../src/utils/embeds');
 const { userNotConntected, botNotConnected } = require('../src/utils/not-connected');
+const play = require('play-dl');
+const { MessageEmbed } = require('discord.js');
+const { editEmbed } = require('../src/utils/embeds');
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('shuffle')
-		.setDescription('Shuffles the queue'),
+		.setName('queue')
+		.setDescription('Checks queue'),
 	async execute(interaction) {
 		await interaction.deferReply();
 
@@ -16,18 +17,21 @@ module.exports = {
 		const connection = getVoiceConnection(guild);
 		if (userNotConntected(interaction)) return;
 		if (botNotConnected(interaction, connection)) return;
+		
+		const songs = getSongs(guild);
+		const queue = [];
 
-		const queue = getSongs(guild);
-
-		for (let position = queue.length - 1; position > 0; position--) {
-			const newPosition = Math.floor(Math.random() * (position + 1));
-			const placeholder = queue[position];
-			queue[position] = queue[newPosition];
-			queue[newPosition] = placeholder;
+		for (const song of songs) {
+			const [search] = await play.search(song, { limit: 1, source: { 'spotify': 'track' } });
+			const track = {
+				title: { name: search.name, url: search.url },
+				artist: { name: search.artists[0].name, url: search.artists[0].url },
+			};
+			queue.push(track);
 		}
-
+		
 		const embed = new MessageEmbed();
-		editEmbed.shuffle(embed, interaction);
+		editEmbed.queue(embed, queue);
 		await interaction.followUp({ embeds: [embed] });
 	},
 };

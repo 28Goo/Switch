@@ -9,18 +9,14 @@ module.exports = {
 		.setName('skip')
 		.setDescription('Skips current track'),
 	async execute(interaction) {
-		if (userNotConntected(interaction)) return;
-
-		const guild = interaction.guild.id;
-		const connection = getVoiceConnection(guild);
-
-		if (botNotConnected(interaction, connection)) return;
-
 		await interaction.deferReply();
+
+		const connection = getVoiceConnection(interaction.guild.id);
+		if (userNotConntected(interaction)) return;
+		if (botNotConnected(interaction, connection)) return;
 		
 		const player = connection.state.subscription.player;
 		player.stop();
-		connection.subscribe(player);
 
 		const embed = new MessageEmbed();
 		editEmbed.skip(embed, interaction);

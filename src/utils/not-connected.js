@@ -7,16 +7,18 @@ module.exports = {
 		if (!voiceChannel) {
 			const embed = new MessageEmbed();
 			editEmbed.userNotConnected(embed);
-			interaction.reply({ embeds: [embed] });
+			interaction.followUp({ embeds: [embed] });
 			return true;
 		}
+		return false;
 	},
 	botNotConnected: (interaction, connection) => {
 		if (connection === undefined) {
 			const embed = new MessageEmbed();
 			editEmbed.botNotConnected(embed);
-			interaction.reply({ embeds: [embed] });
+			interaction.followUp({ embeds: [embed] });
 			return true;
 		}
+		return false;
 	},
 };

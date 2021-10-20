@@ -9,19 +9,17 @@ module.exports = {
 		.setName('resume')
 		.setDescription('Resumes the music.'),
 	async execute(interaction) {
-		if (userNotConntected(interaction)) return;
-
+		await interaction.deferReply();
+		
 		const connection = getVoiceConnection(interaction.guild.id);
-
+		if (userNotConntected(interaction)) return;
 		if (botNotConnected(interaction, connection)) return;
 
 		const player = connection.state.subscription.player;
 		player.unpause();
-		connection.subscribe(player);
 
 		const embed = new MessageEmbed();
 		editEmbed.resume(embed, interaction);
-		await interaction.deferReply();
 		await interaction.followUp({ embeds: [embed] });
 	},
 };
