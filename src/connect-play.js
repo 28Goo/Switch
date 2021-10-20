@@ -8,7 +8,11 @@ module.exports.playMusic = async (interaction) => {
 	const connection = getVoiceConnection(guild);
 
 	const [track] = await play.search(songs[0], { limit: 1 });
-	const stream = await play.stream(track.url);
+	const stream = await play.stream(track.url)
+	.catch(async (error) => {
+		console.error(error);
+		return;
+	}); 
 	
 	const resource = createAudioResource(stream.stream, {
 		inputType: stream.type,
