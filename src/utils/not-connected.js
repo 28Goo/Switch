@@ -13,7 +13,7 @@ module.exports = {
 		return false;
 	},
 	botNotConnected: (interaction, connection) => {
-		if (connection === undefined) {
+		if (!connection) {
 			const embed = new MessageEmbed();
 			editEmbed.botNotConnected(embed);
 			interaction.followUp({ embeds: [embed] });

@@ -1,25 +1,24 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { getVoiceConnection } = require('@discordjs/voice');
-const { getSongs } = require('../src/queue-system');
-const { userNotConntected, botNotConnected } = require('../src/utils/not-connected');
 const { MessageEmbed } = require('discord.js');
 const { editEmbed } = require('../src/utils/embeds');
+const { userNotConntected, botNotConnected } = require('../src/utils/not-connected');
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('queue')
-		.setDescription('Checks queue'),
+		.setName('disconnect')
+		.setDescription('Disconnects Switch from the voice channel.'),
 	async execute(interaction) {
 		await interaction.deferReply();
-
-		const guild = interaction.guild.id;
-		const connection = getVoiceConnection(guild);
+		
+		const connection = getVoiceConnection(interaction.guild.id);
 		if (userNotConntected(interaction)) return;
 		if (botNotConnected(interaction, connection)) return;
-		
-		const songs = getSongs(guild);
+
+		connection.destroy();
+
 		const embed = new MessageEmbed();
-		editEmbed.queue(embed, songs);
+		editEmbed.disconnect(embed, interaction);
 		await interaction.followUp({ embeds: [embed] });
 	},
 };

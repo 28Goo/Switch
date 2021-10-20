@@ -28,4 +28,9 @@ module.exports.playMusic = async (interaction) => {
 			playNextSong(guild, interaction);
 		}
 	});
+
+	player.on('error', error => {
+		console.error(`Error: ${error.message} with resource ${error.resource.metadata}`);
+		playNextSong(guild, interaction);
+	});
 };

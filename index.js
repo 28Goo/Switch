@@ -36,9 +36,9 @@ client.on('interactionCreate', async interaction => {
 		await command.execute(interaction);
 	}
 	catch (error) {
+		console.error(error);
 		const embed = new MessageEmbed();
 		editEmbed.error(embed);
-		console.error(error);
 		await interaction.followUp({ embeds: [embed], ephemeral:true });
 	}
 });

@@ -50,7 +50,11 @@ module.exports = {
 
 		let search;
 
-		if (check === 'yt_video' || check === 'search') {
+		if (check === 'search') {
+			[search] = await play.search(query, { limit: 1 });
+			addSongToQueue(guild, search.title);
+		}
+		else if (check === 'yt_video') {
 			addSongToQueue(guild, query);
 			[search] = await play.search(query, { limit:1 });
 		}
@@ -67,7 +71,7 @@ module.exports = {
 		}
 		else if (check === 'sp_track') {
 			const track = await play.spotify(query);
-			const songDetails = `${track.name} ${track.artists[0].name}`;
+			const songDetails = `${track.name} by ${track.artists[0].name}`;
 			addSongToQueue(guild, songDetails);
 			[search] = await play.search(songDetails, { limit:1 });
 		}
@@ -76,7 +80,7 @@ module.exports = {
 			const tracks = search.page(1);
 
 			for (const track of tracks) {
-				const songDetails = `${track.name} ${track.artists[0].name}`;
+				const songDetails = `${track.name} by ${track.artists[0].name}`;
 				addSongToQueue(guild, songDetails);
 			}
 		}
@@ -117,7 +121,6 @@ module.exports = {
 				await interaction.followUp({ embeds: [embed] });
 				return;
 			}
-			
 		}
 
 		await playMusic(interaction);

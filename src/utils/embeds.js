@@ -50,6 +50,19 @@ module.exports.editEmbed = {
 			.setThumbnail(album.thumbnail.url)
 			.setFooter(`Added by ${interaction.user.username}`, interaction.user.displayAvatarURL());
 	},
+	queue: (embed, queue) => {
+		embed.setColor(hex.default);
+		embed.setTitle('Queue');
+		if (!queue[0]) {
+			embed.setDescription('Queue is empty');
+			return;
+		}
+		queue.forEach((track, index) => {
+			if (index === 0) embed.addField('Now Playing: ', `${track}`);
+			else if (index === 1) embed.addField('Next Song:', `${track}`);
+			else embed.addField(`${index - 1}.`, `${track}`);
+		});
+	},
 	pause: (embed, inteaction) => {
 		embed.setColor(hex.pause);
 		embed.setDescription(`Switch has been paused by ${inteaction.member}.`);
@@ -70,16 +83,8 @@ module.exports.editEmbed = {
 		embed.setColor(hex.shuffle);
 		embed.setDescription(`Queue has been shuffled by ${interaction.member}`);
 	},
-	queue: (embed, queue) => {
-		embed.setColor(hex.default);
-		embed.setTitle('Queue');
-		if (!queue[0]) {
-			embed.setDescription('Queue is empty');
-			return;
-		}
-		for (const track of queue) {
-			embed.addField(`${track.title.name}`, `by ${track.artist.name}`);
-		}
+	disconnect: (embed, interaction) => {
+		embed.setDescription(`Switch has been disconnected by ${interaction.member}`);
 	},
 	userNotConnected: (embed) => {
 		embed.setColor(hex.error);
