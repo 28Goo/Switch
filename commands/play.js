@@ -84,7 +84,7 @@ module.exports = {
 		const songs = getSongs(guild);
 
 		if (songs.length === 1) {
-			editEmbed.play(embed, search, interaction);
+			editEmbed.play(embed, search);
 		}
 		else if (check === 'sp_playlist') {
 			editEmbed.spotifyPlaylist(embed, search, interaction);

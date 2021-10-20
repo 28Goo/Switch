@@ -1,14 +1,12 @@
 module.exports.editEmbed = {
-	play: (embed, search, interaction) => {
+	play: (embed, search) => {
 		embed.setTitle('Now Playing')
 		.setDescription(`[${search.title}](${search.url})`)
 		.setFields(
 			{ name: 'Duration:', value: search.durationRaw, inline:true },
 			{ name: 'Channel:', value: `[${search.channel.name}](${search.channel.url})`, inline:true },
-			{ name: 'Queued by:', value: `${interaction.user}`, inline:true },
 		)
-		.setThumbnail(search.thumbnail.url)
-		.setFooter(`Added by ${interaction.user.username}`, interaction.user.displayAvatarURL());
+		.setThumbnail(search.thumbnail.url);
 	},
 	addedToQueue: (embed, search, interaction) => {
 		embed.setTitle('Added To Queue')
@@ -67,7 +65,7 @@ module.exports.editEmbed = {
 		embed.addField('Switch is not connected to a voice channel', 'Use `/play` to connect Switch.');
 	},
 	invalidUrl: (embed) => {
-		embed.addField('Invalid URL', 'Enter a valid URL', true);
+		embed.addField('Invalid URL', 'Switch does not support the URL provided.', true);
 	},
 	error: (embed) => {
 		embed.setColor('#FF0000');
