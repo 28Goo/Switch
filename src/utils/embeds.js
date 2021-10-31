@@ -5,11 +5,7 @@ module.exports.editEmbed = {
 		embed.setColor(hex.default);
 		embed.setTitle('Now Playing')
 		.setDescription(`[${search.title}](${search.url})`)
-		.setFields(
-			{ name: 'Duration:', value: search.durationRaw, inline:true },
-			{ name: 'Channel:', value: `[${search.channel.name}](${search.channel.url})`, inline:true },
-		)
-		.setThumbnail(search.thumbnail.url);
+		.setThumbnail(search.thumbnail);
 	},
 	addedToQueue: (embed, search, interaction) => {
 		embed.setColor(hex.default);
@@ -49,19 +45,6 @@ module.exports.editEmbed = {
 			)
 			.setThumbnail(album.thumbnail.url)
 			.setFooter(`Added by ${interaction.user.username}`, interaction.user.displayAvatarURL());
-	},
-	queue: (embed, queue) => {
-		embed.setColor(hex.default);
-		embed.setTitle('Queue');
-		if (!queue[0]) {
-			embed.setDescription('Queue is empty');
-			return;
-		}
-		queue.forEach((track, index) => {
-			if (index === 0) embed.addField('Now Playing: ', `${track}`);
-			else if (index === 1) embed.addField('Next Song:', `${track}`);
-			else embed.addField(`${index - 1}.`, `${track}`);
-		});
 	},
 	pause: (embed, inteaction) => {
 		embed.setColor(hex.pause);

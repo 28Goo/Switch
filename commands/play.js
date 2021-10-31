@@ -35,6 +35,7 @@ module.exports = {
 			return;
 		}
 
+		// Establish connection
 		const guild = interaction.guild.id;
 		let connection = getVoiceConnection(interaction.guild.id);
 
@@ -48,23 +49,29 @@ module.exports = {
 			setQueue(guild, connection);
 		}
 
-		let search;
+		let search, result;
 
-		if (check === 'search') {
+		// Check query platform
+		if (check === 'search' || check === 'yt_video') {
 			[search] = await play.search(query, { limit: 1 });
-			addSongToQueue(guild, search.title);
-		}
-		else if (check === 'yt_video') {
-			addSongToQueue(guild, query);
-			[search] = await play.search(query, { limit:1 });
+			result = {
+				title: search.title,
+				url: search.url,
+				thumbnail: search.thumbnail.url,
+			};
+			addSongToQueue(guild, result);
 		}
 		else if (check === 'yt_playlist') {
 			search = await play.playlist_info(query);
 			const tracks = search.page(1);
 
 			for (const track of tracks) {
-				const songTitle = track.title;
-				addSongToQueue(guild, songTitle);
+				result = {
+					title: track.title,
+					url: track.url,
+					thumbnail: track.thumbnail.url,
+				};
+				addSongToQueue(guild, result);
 			}
 			
 			editEmbed.youtubePlaylist(embed, search, interaction);
@@ -72,23 +79,38 @@ module.exports = {
 		else if (check === 'sp_track') {
 			const track = await play.spotify(query);
 			const songDetails = `${track.name} by ${track.artists[0].name}`;
-			addSongToQueue(guild, songDetails);
 			[search] = await play.search(songDetails, { limit:1 });
+			result = {
+				title: search.title,
+				url: search.url,
+				thumbnail: search.thumbnail.url,
+			};
+			addSongToQueue(guild, result);
 		}
 		else if (check === 'sp_playlist' || check === 'sp_album') {
 			search = await play.spotify(query);
 			const tracks = search.page(1);
+			console.log(tracks);
 
 			for (const track of tracks) {
 				const songDetails = `${track.name} by ${track.artists[0].name}`;
-				addSongToQueue(guild, songDetails);
+				const [song] = await play.search(songDetails, { limit:1 });
+				result = {
+					title: song.title,
+					url: song.url,
+					thumbnail: song.thumbnail.url,
+				};
+				addSongToQueue(guild, result);
+				console.log(result);
 			}
 		}
 		
+		// Check query for Embed
 		const songs = getSongs(guild);
+		console.log(songs);
 
 		if (songs.length === 1) {
-			editEmbed.play(embed, search);
+			editEmbed.play(embed, result);
 		}
 		else if (check === 'sp_playlist') {
 			editEmbed.spotifyPlaylist(embed, search, interaction);
@@ -97,6 +119,7 @@ module.exports = {
 			editEmbed.spotifyAlbum(embed, search, interaction);
 		}
 
+		// Check if Bot is playing music then add song/s to queue
 		const subscription = connection.state.subscription;
 		
 		if (subscription) {

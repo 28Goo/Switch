@@ -1,9 +1,8 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { getVoiceConnection } = require('@discordjs/voice');
-const { getSongs } = require('../src/queue-system');
+const { getSongs, getQueue } = require('../src/queue-system');
 const { userNotConntected, botNotConnected } = require('../src/utils/not-connected');
 const { MessageEmbed } = require('discord.js');
-const { editEmbed } = require('../src/utils/embeds');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -19,7 +18,7 @@ module.exports = {
 		
 		const songs = getSongs(guild);
 		const embed = new MessageEmbed();
-		editEmbed.queue(embed, songs);
+		getQueue(songs, embed);
 		await interaction.followUp({ embeds: [embed] });
 	},
 };
