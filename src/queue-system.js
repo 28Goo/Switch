@@ -44,7 +44,15 @@ module.exports = {
 		
 		const connection = getVoiceConnection(guild);
 		const player = connection.state.subscription.player;
-		const stream = await play.stream(songs[position].url);
+
+		let stream;
+		if (!songs[position].title) {
+			const [song] = await play.search(songs[position].song, { limit:1 });
+			stream = await play.stream(song.url);
+		}
+		else {
+			stream = await play.stream(songs[position].url);
+		}
 		
 		const resource = createAudioResource(stream.stream, {
 			inputType: stream.type,
@@ -66,6 +74,12 @@ module.exports = {
 			return embed;
 		}
 		songs.forEach((track, index) => {
+			if (!track.title) {
+				if (index === position) embed.addField('Now Playing: ', `[${track.song}](${track.url})`);
+				else if (index === position + 1) embed.addField('Next Song:', `[${track.song}](${track.url})`);
+				else embed.addField(`${index + 1}.`, `[${track.song}](${track.url})`);
+				return;
+			}
 			if (index === position) embed.addField('Now Playing: ', `[${track.title}](${track.url})`);
 			else if (index === position + 1) embed.addField('Next Song:', `[${track.title}](${track.url})`);
 			else embed.addField(`${index + 1}.`, `[${track.title}](${track.url})`);

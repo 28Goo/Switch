@@ -88,24 +88,19 @@ module.exports = {
 		else if (check === 'sp_playlist' || check === 'sp_album') {
 			songs = await play.spotify(query);
 			const tracks = songs.page(1);
-			console.log(tracks);
 
 			for (const track of tracks) {
-				const songDetails = `${track.name} by ${track.artists[0].name}`;
-				const [song] = await play.search(songDetails, { limit:1 });
+				const song = `${track.name} by ${track.artists[0].name}`;
 				result = {
-					title: song.title,
-					url: song.url,
-					thumbnail: song.thumbnail.url,
+					song,
+					url: track.url,
 				};
 				addSongToQueue(guild, result);
-				console.log(result);
 			}
 		}
 		
 		// Check query for Embed
 		const queue = getQueue(guild);
-		console.log(queue);
 
 		if (queue.length === 1) {
 			editEmbed.play(embed, result);

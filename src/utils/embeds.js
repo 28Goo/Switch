@@ -3,9 +3,15 @@ const hex = require('./hex-values.json');
 module.exports.editEmbed = {
 	play: (embed, song) => {
 		embed.setColor(hex.default);
-		embed.setTitle('Now Playing')
-		.setDescription(`[${song.title}](${song.url})`)
-		.setThumbnail(song.thumbnail);
+		embed.setTitle('Now Playing');
+		if (!song.title) {
+			embed.setDescription(`[${song.song}](${song.url})`);
+			embed.setThumbnail(song.thumbnail);
+		}
+		else {
+			embed.setDescription(`[${song.title}](${song.url})`);
+			embed.setThumbnail(song.thumbnail);
+		}
 	},
 	addedToQueue: (embed, search, interaction) => {
 		embed.setColor(hex.default);
