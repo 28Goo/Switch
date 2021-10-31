@@ -94,6 +94,7 @@ module.exports = {
 				result = {
 					song,
 					url: track.url,
+					thumbnail: track.thumbnail.url,
 				};
 				addSongToQueue(guild, result);
 			}
