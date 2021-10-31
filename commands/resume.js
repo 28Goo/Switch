@@ -9,8 +9,6 @@ module.exports = {
 		.setName('resume')
 		.setDescription('Resumes the music.'),
 	async execute(interaction) {
-		await interaction.deferReply();
-		
 		const connection = getVoiceConnection(interaction.guild.id);
 		if (userNotConntected(interaction)) return;
 		if (botNotConnected(interaction, connection)) return;

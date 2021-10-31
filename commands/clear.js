@@ -10,13 +10,10 @@ module.exports = {
 		.setName('clear')
 		.setDescription('Clears the queue.'),
 	async execute(interaction) {
-		await interaction.deferReply();
-
 		if (userNotConntected(interaction)) return;
 		
 		const guild = interaction.guild.id;
 		const connection = getVoiceConnection(guild);
-
 		if (botNotConnected(interaction, connection)) return;
 		
 		clearQueue(guild);

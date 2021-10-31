@@ -1,13 +1,13 @@
 const { createAudioResource, createAudioPlayer, NoSubscriberBehavior, getVoiceConnection } = require('@discordjs/voice');
 const play = require('play-dl');
-const { getSongs, playNextSong } = require('./queue-system');
+const { playNextSong, getQueue } = require('./queue-system');
 
 module.exports.playMusic = async (interaction) => {
 	const guild = interaction.guild.id;
-	const songs = getSongs(guild);
+	const queue = getQueue(guild);
 	const connection = getVoiceConnection(guild);
 
-	const stream = await play.stream(songs[0].url)
+	const stream = await play.stream(queue[0].url)
 	.catch(async (error) => {
 		console.error(error);
 		return;

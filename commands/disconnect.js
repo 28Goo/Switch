@@ -9,8 +9,6 @@ module.exports = {
 		.setName('disconnect')
 		.setDescription('Disconnects Switch from the voice channel.'),
 	async execute(interaction) {
-		await interaction.deferReply();
-		
 		const connection = getVoiceConnection(interaction.guild.id);
 		if (userNotConntected(interaction)) return;
 		if (botNotConnected(interaction, connection)) return;

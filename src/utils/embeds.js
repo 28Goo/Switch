@@ -1,11 +1,11 @@
 const hex = require('./hex-values.json');
 
 module.exports.editEmbed = {
-	play: (embed, search) => {
+	play: (embed, song) => {
 		embed.setColor(hex.default);
 		embed.setTitle('Now Playing')
-		.setDescription(`[${search.title}](${search.url})`)
-		.setThumbnail(search.thumbnail);
+		.setDescription(`[${song.title}](${song.url})`)
+		.setThumbnail(song.thumbnail);
 	},
 	addedToQueue: (embed, search, interaction) => {
 		embed.setColor(hex.default);
@@ -65,6 +65,14 @@ module.exports.editEmbed = {
 	shuffle: (embed, interaction) => {
 		embed.setColor(hex.shuffle);
 		embed.setDescription(`Queue has been shuffled by ${interaction.member}`);
+	},
+	loop: (embed, interaction) => {
+		embed.setColor(hex.loop);
+		embed.setDescription(`Queue has been looped by ${interaction.member}`);
+	},
+	stopLoop: (embed, interaction) => {
+		embed.setColor(hex.stopLoop);
+		embed.setDescription(`Loop has been removed by ${interaction.member}`);
 	},
 	disconnect: (embed, interaction) => {
 		embed.setDescription(`Switch has been disconnected by ${interaction.member}`);

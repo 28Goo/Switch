@@ -1,5 +1,4 @@
 // Libraries
-const { MessageEmbed } = require('discord.js');
 const { getVoiceConnection, joinVoiceChannel } = require('@discordjs/voice');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const play = require('play-dl');
@@ -7,8 +6,9 @@ const play = require('play-dl');
 // Own Exports
 const { editEmbed } = require('../src/utils/embeds');
 const { userNotConntected } = require('../src/utils/not-connected');
-const { setQueue, getSongs, addSongToQueue } = require('../src/queue-system');
+const { setQueue, addSongToQueue, getQueue } = require('../src/queue-system');
 const { playMusic } = require('../src/connect-play');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -20,8 +20,6 @@ module.exports = {
 	async execute(interaction) {
 		const query = interaction.options.getString('query');
 		const embed = new MessageEmbed();
-
-		await interaction.deferReply();
 
 		if (userNotConntected(interaction)) return;
 
@@ -49,21 +47,21 @@ module.exports = {
 			setQueue(guild, connection);
 		}
 
-		let search, result;
+		let songs, result;
 
 		// Check query platform
 		if (check === 'search' || check === 'yt_video') {
-			[search] = await play.search(query, { limit: 1 });
+			const [song] = await play.search(query, { limit: 1 });
 			result = {
-				title: search.title,
-				url: search.url,
-				thumbnail: search.thumbnail.url,
+				title: song.title,
+				url: song.url,
+				thumbnail: song.thumbnail.url,
 			};
 			addSongToQueue(guild, result);
 		}
 		else if (check === 'yt_playlist') {
-			search = await play.playlist_info(query);
-			const tracks = search.page(1);
+			songs = await play.playlist_info(query);
+			const tracks = songs.page(1);
 
 			for (const track of tracks) {
 				result = {
@@ -74,22 +72,22 @@ module.exports = {
 				addSongToQueue(guild, result);
 			}
 			
-			editEmbed.youtubePlaylist(embed, search, interaction);
+			editEmbed.youtubePlaylist(embed, songs, interaction);
 		}
 		else if (check === 'sp_track') {
 			const track = await play.spotify(query);
 			const songDetails = `${track.name} by ${track.artists[0].name}`;
-			[search] = await play.search(songDetails, { limit:1 });
+			const [song] = await play.search(songDetails, { limit:1 });
 			result = {
-				title: search.title,
-				url: search.url,
-				thumbnail: search.thumbnail.url,
+				title: song.title,
+				url: song.url,
+				thumbnail: song.thumbnail.url,
 			};
 			addSongToQueue(guild, result);
 		}
 		else if (check === 'sp_playlist' || check === 'sp_album') {
-			search = await play.spotify(query);
-			const tracks = search.page(1);
+			songs = await play.spotify(query);
+			const tracks = songs.page(1);
 			console.log(tracks);
 
 			for (const track of tracks) {
@@ -106,17 +104,17 @@ module.exports = {
 		}
 		
 		// Check query for Embed
-		const songs = getSongs(guild);
-		console.log(songs);
+		const queue = getQueue(guild);
+		console.log(queue);
 
-		if (songs.length === 1) {
+		if (queue.length === 1) {
 			editEmbed.play(embed, result);
 		}
 		else if (check === 'sp_playlist') {
-			editEmbed.spotifyPlaylist(embed, search, interaction);
+			editEmbed.spotifyPlaylist(embed, songs, interaction);
 		}
 		else if (check === 'sp_album') {
-			editEmbed.spotifyAlbum(embed, search, interaction);
+			editEmbed.spotifyAlbum(embed, songs, interaction);
 		}
 
 		// Check if Bot is playing music then add song/s to queue
@@ -125,22 +123,22 @@ module.exports = {
 		if (subscription) {
 			const playerStatus = subscription.player.state.status;
 			if (playerStatus === 'playing' && (check === 'search' || check === 'sp_track' || check === 'yt_video')) {
-				editEmbed.addedToQueue(embed, search, interaction);
+				editEmbed.addedToQueue(embed, result, interaction);
 				await interaction.followUp({ embeds: [embed] });
 				return;
 			}
 			else if (playerStatus === 'playing' && check === 'sp_playlist') {
-				editEmbed.spotifyPlaylist(embed, search, interaction);
+				editEmbed.spotifyPlaylist(embed, songs, interaction);
 				await interaction.followUp({ embeds: [embed] });
 				return;
 			}
 			else if (playerStatus === 'playing' && check === 'sp_album') {
-				editEmbed.spotifyAlbum(embed, search, interaction);
+				editEmbed.spotifyAlbum(embed, songs, interaction);
 				await interaction.followUp({ embeds: [embed] });
 				return;
 			}
 			else if (playerStatus === 'playing' && check === 'yt_playlist') {
-				editEmbed.youtubePlaylist(embed, search, interaction);
+				editEmbed.youtubePlaylist(embed, songs, interaction);
 				await interaction.followUp({ embeds: [embed] });
 				return;
 			}

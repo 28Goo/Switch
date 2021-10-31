@@ -33,6 +33,7 @@ client.on('interactionCreate', async interaction => {
 	if (!command) return;
 
 	try {
+		interaction.deferReply();
 		await command.execute(interaction);
 	}
 	catch (error) {
