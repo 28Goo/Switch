@@ -7,6 +7,7 @@ const hex = require('./utils/hex-values.json');
 const queue = new Map();
 let position = 0;
 let loop = false;
+let cleared = false;
 
 module.exports = {
 	setQueue: (guild, connection) => {
@@ -27,21 +28,31 @@ module.exports = {
 		return songs;
 	},
 	clearQueue: (guild) => {
+		cleared = true;
+		console.log(`Cleared: ${position}`);
 		queue.get(guild).songs = [];
-		position = 0;
+
 	},
 	playNextSong: async (guild, interaction) => {
 		position++;
-		const songs = queue.get(guild).songs;
 		
-		if (!songs[position] && loop === true) {
+		if (cleared === true) {
+			position = 0;
+			cleared = false;
+		}
+		const songs = queue.get(guild).songs;
+
+		if (!songs[position + 1] && loop === true) {
 			position = 0;
 		}
 		else if (!songs[position]) {
 			queue.get(guild).songs = [];
+			position = 0;
 			return;
 		}
-		
+	
+		console.log(`playNextSong: ${position}`);
+
 		const connection = getVoiceConnection(guild);
 		const player = connection.state.subscription.player;
 

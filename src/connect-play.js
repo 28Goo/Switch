@@ -10,7 +10,11 @@ module.exports.playMusic = async (interaction) => {
 	let stream;
 	if (!queue[0].title) {
 		const [song] = await play.search(queue[0].song, { limit:1 });
-		stream = await play.stream(song.url);
+		stream = await play.stream(song.url)
+		.catch(async (error) => {
+			console.log(error);
+			playNextSong(guild, interaction);
+		});
 	}
 	else {
 		stream = await play.stream(queue[0].url);

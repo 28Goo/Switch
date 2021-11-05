@@ -76,12 +76,11 @@ module.exports = {
 		}
 		else if (check === 'sp_track') {
 			const track = await play.spotify(query);
-			const songDetails = `${track.name} by ${track.artists[0].name}`;
-			const [song] = await play.search(songDetails, { limit:1 });
+			const song = `${track.name} by ${track.artists[0].name}`;
 			result = {
-				title: song.title,
-				url: song.url,
-				thumbnail: song.thumbnail.url,
+				song,
+				url: track.url,
+				thumbnail: track.thumbnail.url,
 			};
 			addSongToQueue(guild, result);
 		}
