@@ -29,7 +29,6 @@ module.exports = {
 	},
 	clearQueue: (guild) => {
 		cleared = true;
-		console.log(`Cleared: ${position}`);
 		queue.get(guild).songs = [];
 
 	},
@@ -50,8 +49,6 @@ module.exports = {
 			position = 0;
 			return;
 		}
-	
-		console.log(`playNextSong: ${position}`);
 
 		const connection = getVoiceConnection(guild);
 		const player = connection.state.subscription.player;
@@ -84,17 +81,19 @@ module.exports = {
 			embed.setDescription('Queue is empty');
 			return embed;
 		}
-		songs.forEach((track, index) => {
+		for (let i = position; i < songs.length; i++) {
+			const track = songs[i];
 			if (!track.title) {
-				if (index === position) embed.addField('Now Playing: ', `[${track.song}](${track.url})`);
-				else if (index === position + 1) embed.addField('Next Song:', `[${track.song}](${track.url})`);
-				else embed.addField(`${index + 1}.`, `[${track.song}](${track.url})`);
-				return;
+				if (i === position) embed.addField('Now Playing: ', `[${track.song}](${track.url})`);
+				else if (i === position + 1) embed.addField('Next Song:', `[${track.song}](${track.url})`);
+				else embed.addField(`${i + 1}.`, `[${track.song}](${track.url})`);
 			}
-			if (index === position) embed.addField('Now Playing: ', `[${track.title}](${track.url})`);
-			else if (index === position + 1) embed.addField('Next Song:', `[${track.title}](${track.url})`);
-			else embed.addField(`${index + 1}.`, `[${track.title}](${track.url})`);
-		});
+			else if (!track.song) {
+				if (i === position) embed.addField('Now Playing: ', `[${track.title}](${track.url})`);
+				else if (i === position + 1) embed.addField('Next Song:', `[${track.title}](${track.url})`);
+				else embed.addField(`${i + 1}.`, `[${track.title}](${track.url})`);
+			}
+		}
 		return embed;
 	},
 	loopQueue: (interaction) => {
