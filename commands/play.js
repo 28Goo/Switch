@@ -56,6 +56,7 @@ module.exports = {
 				title: song.title,
 				url: song.url,
 				thumbnail: song.thumbnail.url,
+				duration: song.durationInSec * 1000,
 			};
 			addSongToQueue(guild, result);
 		}
@@ -68,6 +69,7 @@ module.exports = {
 					title: track.title,
 					url: track.url,
 					thumbnail: track.thumbnail.url,
+					duration: track.durationInSec * 1000,
 				};
 				addSongToQueue(guild, result);
 			}
@@ -81,19 +83,34 @@ module.exports = {
 				song,
 				url: track.url,
 				thumbnail: track.thumbnail.url,
+				duration: track.durationInMs,
 			};
 			addSongToQueue(guild, result);
 		}
-		else if (check === 'sp_playlist' || check === 'sp_album') {
+		else if (check === 'sp_playlist') {
 			songs = await play.spotify(query);
 			const tracks = songs.page(1);
-
 			for (const track of tracks) {
 				const song = `${track.name} by ${track.artists[0].name}`;
 				result = {
 					song,
 					url: track.url,
 					thumbnail: track.thumbnail.url,
+					duration: track.durationInMs,
+				};
+				addSongToQueue(guild, result);
+			}
+		}
+		else if (check === 'sp_album') {
+			songs = await play.spotify(query);
+			const tracks = songs.page(1);
+			for (const track of tracks) {
+				const song = `${track.name} by ${track.artists[0].name}`;
+				result = {
+					song,
+					url: track.url,
+					thumbnail: songs.thumbnail.url,
+					duration: track.durationInMs,
 				};
 				addSongToQueue(guild, result);
 			}
@@ -103,7 +120,7 @@ module.exports = {
 		const queue = getQueue(guild);
 
 		if (queue.length === 1) {
-			editEmbed.play(embed, result);
+			editEmbed.addedToQueue(embed, result, interaction);
 		}
 		else if (check === 'sp_playlist') {
 			editEmbed.spotifyPlaylist(embed, songs, interaction);

@@ -3,11 +3,11 @@ const { MessageEmbed } = require('discord.js');
 const play = require('play-dl');
 const { editEmbed } = require('./utils/embeds');
 const hex = require('./utils/hex-values.json');
+const { playMessage } = require('./utils/play-message');
 
 const queue = new Map();
 let position = 0;
 let loop = false;
-let cleared = false;
 
 module.exports = {
 	setQueue: (guild, connection) => {
@@ -28,26 +28,22 @@ module.exports = {
 		return songs;
 	},
 	clearQueue: (guild) => {
-		cleared = true;
 		queue.get(guild).songs = [];
-
+		position = 0;
+		return;
 	},
 	playNextSong: async (guild, interaction) => {
 		position++;
-		
-		if (cleared === true) {
-			position = 0;
-			cleared = false;
-		}
+	
 		const songs = queue.get(guild).songs;
 
-		if (!songs[position + 1] && loop === true) {
-			position = 0;
-		}
-		else if (!songs[position]) {
+		if (!songs[position]) {
 			queue.get(guild).songs = [];
 			position = 0;
 			return;
+		}
+		if (!songs[position + 1] && loop === true) {
+			position = 0;
 		}
 
 		const connection = getVoiceConnection(guild);
@@ -68,9 +64,7 @@ module.exports = {
 
 		player.play(resource);
 
-		const embed = new MessageEmbed();
-		editEmbed.play(embed, songs[position]);
-		interaction.channel.send({ embeds: [embed] });
+		playMessage(interaction, songs[position]);
 	},
 	presentQueue: (guild) => {
 		const embed = new MessageEmbed();
@@ -106,6 +100,17 @@ module.exports = {
 		}
 		loop = true;
 		editEmbed.loop(embed, interaction);
+		interaction.followUp({ embeds: [embed] });
+	},
+	getNowPlaying: (interaction, guild) => {
+		const songs = queue.get(guild).songs;
+
+		const embed = new MessageEmbed;
+		if (!songs[position]) {
+			editEmbed.noSong(embed);
+			return;
+		}
+		editEmbed.play(embed, songs[position]);
 		interaction.followUp({ embeds: [embed] });
 	},
 };

@@ -99,4 +99,8 @@ module.exports.editEmbed = {
 		embed.setColor(hex.error);
 		embed.setDescription('There was an error while executing the command.');
 	},
+	noSong: (embed) => {
+		embed.setColor(hex.error);
+		embed.setDescription('No song is currently playing.');
+	},
 };

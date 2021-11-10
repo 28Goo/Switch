@@ -1,6 +1,7 @@
 const { createAudioResource, createAudioPlayer, NoSubscriberBehavior, getVoiceConnection } = require('@discordjs/voice');
 const play = require('play-dl');
 const { playNextSong, getQueue } = require('./queue-system');
+const { playMessage } = require('./utils/play-message');
 
 module.exports.playMusic = async (interaction) => {
 	const guild = interaction.guild.id;
@@ -30,6 +31,8 @@ module.exports.playMusic = async (interaction) => {
 
 	player.play(resource);
 	connection.subscribe(player);
+
+	playMessage(interaction, queue[0]);
 
 	player.on('stateChange', async (oldState, newState) => {
 		console.log(`Switch transitioned from ${oldState.status} to ${newState.status}`);
