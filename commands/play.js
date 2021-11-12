@@ -6,7 +6,7 @@ const play = require('play-dl');
 // Own Exports
 const { editEmbed } = require('../src/utils/embeds');
 const { userNotConntected } = require('../src/utils/not-connected');
-const { setQueue, addSongToQueue, getQueue } = require('../src/queue-system');
+const { setQueue, addSongToQueue } = require('../src/queue-system');
 const { playMusic } = require('../src/connect-play');
 const { MessageEmbed } = require('discord.js');
 
@@ -51,29 +51,17 @@ module.exports = {
 
 		// Check query platform
 		if (check === 'search' || check === 'yt_video') {
-			const [song] = await play.search(query, { limit: 1 });
-			result = {
-				title: song.title,
-				url: song.url,
-				thumbnail: song.thumbnail.url,
-				duration: song.durationInSec * 1000,
-			};
-			addSongToQueue(guild, result);
+			const [track] = await play.search(query, { limit: 1 });
+			addSongToQueue(guild, track);
+			editEmbed.addedToQueue(embed, track, interaction);
 		}
 		else if (check === 'yt_playlist') {
 			songs = await play.playlist_info(query);
 			const tracks = songs.page(1);
 
 			for (const track of tracks) {
-				result = {
-					title: track.title,
-					url: track.url,
-					thumbnail: track.thumbnail.url,
-					duration: track.durationInSec * 1000,
-				};
-				addSongToQueue(guild, result);
+				addSongToQueue(guild, track);
 			}
-			
 			editEmbed.youtubePlaylist(embed, songs, interaction);
 		}
 		else if (check === 'sp_track') {
@@ -82,50 +70,37 @@ module.exports = {
 			result = {
 				song,
 				url: track.url,
-				thumbnail: track.thumbnail.url,
-				duration: track.durationInMs,
+				durationInMs: track.durationInMs,
 			};
 			addSongToQueue(guild, result);
-		}
-		else if (check === 'sp_playlist') {
-			songs = await play.spotify(query);
-			const tracks = songs.page(1);
-			for (const track of tracks) {
-				const song = `${track.name} by ${track.artists[0].name}`;
-				result = {
-					song,
-					url: track.url,
-					thumbnail: track.thumbnail.url,
-					duration: track.durationInMs,
-				};
-				addSongToQueue(guild, result);
-			}
-		}
-		else if (check === 'sp_album') {
-			songs = await play.spotify(query);
-			const tracks = songs.page(1);
-			for (const track of tracks) {
-				const song = `${track.name} by ${track.artists[0].name}`;
-				result = {
-					song,
-					url: track.url,
-					thumbnail: songs.thumbnail.url,
-					duration: track.durationInMs,
-				};
-				addSongToQueue(guild, result);
-			}
-		}
-		
-		// Check query for Embed
-		const queue = getQueue(guild);
-
-		if (queue.length === 1) {
 			editEmbed.addedToQueue(embed, result, interaction);
 		}
 		else if (check === 'sp_playlist') {
+			songs = await play.spotify(query);
+			const tracks = songs.page(1);
+			for (const track of tracks) {
+				const song = `${track.name} by ${track.artists[0].name}`;
+				result = {
+					song,
+					url: track.url,
+					durationInMs: track.durationInMs,
+				};
+				addSongToQueue(guild, result);
+			}
 			editEmbed.spotifyPlaylist(embed, songs, interaction);
 		}
 		else if (check === 'sp_album') {
+			songs = await play.spotify(query);
+			const tracks = songs.page(1);
+			for (const track of tracks) {
+				const song = `${track.name} by ${track.artists[0].name}`;
+				result = {
+					song,
+					url: track.url,
+					durationInMs: track.durationInMs,
+				};
+				addSongToQueue(guild, result);
+			}
 			editEmbed.spotifyAlbum(embed, songs, interaction);
 		}
 
@@ -134,23 +109,7 @@ module.exports = {
 		
 		if (subscription) {
 			const playerStatus = subscription.player.state.status;
-			if (playerStatus === 'playing' && (check === 'search' || check === 'sp_track' || check === 'yt_video')) {
-				editEmbed.addedToQueue(embed, result, interaction);
-				await interaction.followUp({ embeds: [embed] });
-				return;
-			}
-			else if (playerStatus === 'playing' && check === 'sp_playlist') {
-				editEmbed.spotifyPlaylist(embed, songs, interaction);
-				await interaction.followUp({ embeds: [embed] });
-				return;
-			}
-			else if (playerStatus === 'playing' && check === 'sp_album') {
-				editEmbed.spotifyAlbum(embed, songs, interaction);
-				await interaction.followUp({ embeds: [embed] });
-				return;
-			}
-			else if (playerStatus === 'playing' && check === 'yt_playlist') {
-				editEmbed.youtubePlaylist(embed, songs, interaction);
+			if (playerStatus === 'playing') {
 				await interaction.followUp({ embeds: [embed] });
 				return;
 			}

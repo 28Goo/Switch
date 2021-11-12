@@ -49,9 +49,9 @@ module.exports = {
 		const connection = getVoiceConnection(guild);
 		const player = connection.state.subscription.player;
 
-		let stream;
+		let song, stream;
 		if (!songs[position].title) {
-			const [song] = await play.search(songs[position].song, { limit:1 });
+			[song] = await play.search(songs[position].song, { limit:1 });
 			stream = await play.stream(song.url);
 		}
 		else {
@@ -63,8 +63,8 @@ module.exports = {
 		});
 
 		player.play(resource);
-
-		playMessage(interaction, songs[position]);
+		if (!songs[position].title) playMessage(interaction, song);
+		else playMessage(interaction, songs[position]);
 	},
 	presentQueue: (guild) => {
 		const embed = new MessageEmbed();
@@ -101,6 +101,10 @@ module.exports = {
 		loop = true;
 		editEmbed.loop(embed, interaction);
 		interaction.followUp({ embeds: [embed] });
+	},
+	stopLoop: () => {
+		loop = false;
+		return;
 	},
 	getNowPlaying: (interaction, guild) => {
 		const songs = queue.get(guild).songs;

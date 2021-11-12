@@ -8,9 +8,9 @@ module.exports.playMusic = async (interaction) => {
 	const queue = getQueue(guild);
 	const connection = getVoiceConnection(guild);
 
-	let stream;
+	let song, stream;
 	if (!queue[0].title) {
-		const [song] = await play.search(queue[0].song, { limit:1 });
+		[song] = await play.search(queue[0].song, { limit:1 });
 		stream = await play.stream(song.url)
 		.catch(async (error) => {
 			console.log(error);
@@ -32,7 +32,8 @@ module.exports.playMusic = async (interaction) => {
 	player.play(resource);
 	connection.subscribe(player);
 
-	playMessage(interaction, queue[0]);
+	if (!queue[0].title) playMessage(interaction, song);
+	else playMessage(interaction, queue[0]);
 
 	player.on('stateChange', async (oldState, newState) => {
 		console.log(`Switch transitioned from ${oldState.status} to ${newState.status}`);
@@ -44,5 +45,6 @@ module.exports.playMusic = async (interaction) => {
 
 	player.on('error', error => {
 		console.error(`Error: ${error.message} with resource ${error.resource.metadata}`);
+		playNextSong(guild, interaction);
 	});
 };

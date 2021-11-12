@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { getVoiceConnection } = require('@discordjs/voice');
 const { MessageEmbed } = require('discord.js');
-const { clearQueue } = require('../src/queue-system');
+const { clearQueue, stopLoop } = require('../src/queue-system');
 const { editEmbed } = require('../src/utils/embeds');
 const { userNotConntected, botNotConnected } = require('../src/utils/not-connected');
 
@@ -15,6 +15,7 @@ module.exports = {
 		if (botNotConnected(interaction, connection)) return;
 
 		clearQueue(interaction.guild.id);
+		stopLoop();
 		connection.destroy();
 
 		const embed = new MessageEmbed();
