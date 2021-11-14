@@ -7,14 +7,18 @@ module.exports.playMusic = async (interaction) => {
 	const guild = interaction.guild.id;
 	const queue = getQueue(guild);
 	const connection = getVoiceConnection(guild);
-
-	let song, stream;
+	
+	let song;
+	let stream = 0;
 	if (!queue[0].title) {
-		[song] = await play.search(queue[0].song, { limit:1 });
+		[song] = await play.search(queue[0].song, { limit:3 });
 		stream = await play.stream(song.url)
 		.catch(async (error) => {
 			console.log(error);
-			playNextSong(guild, interaction);
+			const songs = await play.search(queue[0].song, { limit:2 });
+			song = songs[1];
+			stream = await play.stream(song.url);
+			return stream;
 		});
 	}
 	else {
