@@ -116,6 +116,11 @@ module.exports = {
 		}
 
 		await playMusic(interaction);
-		await interaction.followUp({ embeds: [embed] });
+		interaction.followUp({ embeds: [embed] })
+		.then(msg => {
+			setTimeout(() => {
+				msg.delete();
+			}, 10000);
+		});
 	},
 };
