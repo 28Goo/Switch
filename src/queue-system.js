@@ -42,7 +42,7 @@ module.exports = {
 			position = 0;
 			return;
 		}
-		if (!songs[position + 1] && loop === true) {
+		if (!songs[position] && loop === true) {
 			position = 0;
 		}
 
