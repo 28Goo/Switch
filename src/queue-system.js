@@ -1,4 +1,4 @@
-const { getVoiceConnection, createAudioResource } = require('@discordjs/voice');
+const { getVoiceConnection, createAudioResource, joinVoiceChannel } = require('@discordjs/voice');
 const { MessageEmbed } = require('discord.js');
 const play = require('play-dl');
 const { editEmbed } = require('./utils/embeds');
@@ -46,7 +46,16 @@ module.exports = {
 			position = 0;
 		}
 
-		const connection = getVoiceConnection(guild);
+		let connection = getVoiceConnection(guild);
+
+		if (!connection) {
+			connection = joinVoiceChannel({
+				channelId: interaction.member.voice.channel.id,
+				guildId: interaction.guild.id,
+				adapterCreator: interaction.guild.voiceAdapterCreator,
+			});
+		}
+		
 		const player = connection.state.subscription.player;
 
 		let song, stream;
