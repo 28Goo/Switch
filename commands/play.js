@@ -110,13 +110,18 @@ module.exports = {
 		if (subscription) {
 			const playerStatus = subscription.player.state.status;
 			if (playerStatus === 'playing') {
-				await interaction.followUp({ embeds: [embed] });
+				await interaction.followUp({ embeds: [embed] })
+				.then(msg => {
+					setTimeout(() => {
+						msg.delete();
+					}, 10000);
+				});
 				return;
 			}
 		}
 
 		await playMusic(interaction);
-		interaction.followUp({ embeds: [embed] })
+		await interaction.followUp({ embeds: [embed] })
 		.then(msg => {
 			setTimeout(() => {
 				msg.delete();

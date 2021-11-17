@@ -37,13 +37,13 @@ module.exports = {
 	
 		const songs = queue.get(guild).songs;
 
-		if (!songs[position]) {
+		if (!songs[position] && loop === true) {
+			position = 0;
+		}
+		else if (!songs[position]) {
 			queue.get(guild).songs = [];
 			position = 0;
 			return;
-		}
-		if (!songs[position] && loop === true) {
-			position = 0;
 		}
 
 		const connection = getVoiceConnection(guild);
