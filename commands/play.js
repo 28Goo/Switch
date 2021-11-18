@@ -113,7 +113,7 @@ module.exports = {
 				await interaction.followUp({ embeds: [embed] })
 				.then(msg => {
 					setTimeout(() => {
-						msg.delete();
+						if (!msg.deleted) msg.delete();
 					}, 10000);
 				});
 				return;
@@ -124,7 +124,7 @@ module.exports = {
 		await interaction.followUp({ embeds: [embed] })
 		.then(msg => {
 			setTimeout(() => {
-				msg.delete();
+				if (!msg.deleted) msg.delete();
 			}, 10000);
 		});
 	},

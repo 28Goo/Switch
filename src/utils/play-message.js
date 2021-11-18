@@ -11,7 +11,7 @@ module.exports = {
 			if (!song.durationInSec) duration = song.durationInMs;
 			else duration = song.durationInSec * 1000;
 			setTimeout(() => {
-				msg.delete();
+				if (!msg.deleted) msg.delete();
 			}, duration);
 		});
 	},
