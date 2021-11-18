@@ -40,7 +40,7 @@ module.exports = {
 		if (!songs[position] && loop === true) {
 			position = 0;
 		}
-		else if (!songs[position]) {
+		if (!songs[position]) {
 			queue.get(guild).songs = [];
 			position = 0;
 			return;
@@ -54,6 +54,7 @@ module.exports = {
 				behaviors: NoSubscriberBehavior.Play,
 			});
 		}
+		
 
 		let song, stream;
 		if (!songs[position].title) {
