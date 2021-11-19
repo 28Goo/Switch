@@ -58,7 +58,7 @@ module.exports = {
 
 		let song, stream;
 		if (!songs[position].title) {
-			[song] = await play.search(songs[position].song, { limit:1 });
+			[song] = await play.search(songs[position].sp, { limit:1 });
 			stream = await play.stream(song.url);
 		}
 		else {

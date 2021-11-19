@@ -5,7 +5,7 @@ module.exports.editEmbed = {
 		embed.setColor(hex.default);
 		embed.setTitle('Now Playing');
 		if (!song.title) {
-			embed.setDescription(`[${song.song}](${song.url})`);
+			embed.setDescription(`[${song.sp}](${song.url})`);
 		}
 		embed.setDescription(`[${song.title}](${song.url})`);
 	},
@@ -13,7 +13,7 @@ module.exports.editEmbed = {
 		embed.setColor(hex.default)
 		.setTitle('Added To Queue');
 		if (!search.title) {
-			embed.setDescription(`[${search.song}](${search.url})`);
+			embed.setDescription(`[${search.sp}](${search.url})`);
 		}
 		embed.setDescription(`[${search.title}](${search.url})`);
 		embed.setFooter(`Added by: ${interaction.user.username}`, interaction.user.displayAvatarURL());

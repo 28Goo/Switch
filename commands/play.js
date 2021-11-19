@@ -19,6 +19,7 @@ module.exports = {
 			.setRequired(true)),
 	async execute(interaction) {
 		const query = interaction.options.getString('query');
+		console.log({ query });
 		const embed = new MessageEmbed();
 
 		if (userNotConntected(interaction)) return;
@@ -66,9 +67,9 @@ module.exports = {
 		}
 		else if (check === 'sp_track') {
 			const track = await play.spotify(query);
-			const song = `${track.name} by ${track.artists[0].name}`;
+			const song = `${track.name} - ${track.artists[0].name}`;
 			result = {
-				song,
+				sp: song,
 				url: track.url,
 				durationInMs: track.durationInMs,
 			};
@@ -79,9 +80,9 @@ module.exports = {
 			songs = await play.spotify(query);
 			const tracks = songs.page(1);
 			for (const track of tracks) {
-				const song = `${track.name} by ${track.artists[0].name}`;
+				const song = `${track.name} - ${track.artists[0].name}`;
 				result = {
-					song,
+					sp: song,
 					url: track.url,
 					durationInMs: track.durationInMs,
 				};
@@ -93,9 +94,9 @@ module.exports = {
 			songs = await play.spotify(query);
 			const tracks = songs.page(1);
 			for (const track of tracks) {
-				const song = `${track.name} by ${track.artists[0].name}`;
+				const song = `${track.name} - ${track.artists[0].name}`;
 				result = {
-					song,
+					sp: song,
 					url: track.url,
 					durationInMs: track.durationInMs,
 				};
@@ -110,22 +111,12 @@ module.exports = {
 		if (subscription) {
 			const playerStatus = subscription.player.state.status;
 			if (playerStatus === 'playing') {
-				await interaction.followUp({ embeds: [embed] })
-				.then(msg => {
-					setTimeout(() => {
-						if (!msg.deleted) msg.delete();
-					}, 10000);
-				});
+				await interaction.followUp({ embeds: [embed] });
 				return;
 			}
 		}
 
 		await playMusic(interaction);
-		await interaction.followUp({ embeds: [embed] })
-		.then(msg => {
-			setTimeout(() => {
-				if (!msg.deleted) msg.delete();
-			}, 10000);
-		});
+		await interaction.followUp({ embeds: [embed] });
 	},
 };
