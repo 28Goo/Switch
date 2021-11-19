@@ -85,9 +85,9 @@ module.exports = {
 		for (let i = position; i < songs.length; i++) {
 			const track = songs[i];
 			if (!track.title) {
-				if (i === position) embed.addField('Now Playing: ', `[${track.song}](${track.url})`);
-				else if (i === position + 1) embed.addField('Next Song:', `[${track.song}](${track.url})`);
-				else embed.addField(`${i + 1}.`, `[${track.song}](${track.url})`);
+				if (i === position) embed.addField('Now Playing: ', `[${track.sp}](${track.url})`);
+				else if (i === position + 1) embed.addField('Next Song:', `[${track.sp}](${track.url})`);
+				else embed.addField(`${i + 1}.`, `[${track.sp}](${track.url})`);
 			}
 			else if (!track.song) {
 				if (i === position) embed.addField('Now Playing: ', `[${track.title}](${track.url})`);

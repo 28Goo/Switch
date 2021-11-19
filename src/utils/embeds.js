@@ -7,7 +7,9 @@ module.exports.editEmbed = {
 		if (!song.title) {
 			embed.setDescription(`[${song.sp}](${song.url})`);
 		}
-		embed.setDescription(`[${song.title}](${song.url})`);
+		else {
+			embed.setDescription(`[${song.title}](${song.url})`);
+		}
 	},
 	addedToQueue: (embed, search, interaction) => {
 		embed.setColor(hex.default)
@@ -15,7 +17,9 @@ module.exports.editEmbed = {
 		if (!search.title) {
 			embed.setDescription(`[${search.sp}](${search.url})`);
 		}
-		embed.setDescription(`[${search.title}](${search.url})`);
+		else {
+			embed.setDescription(`[${search.title}](${search.url})`);
+		}
 		embed.setFooter(`Added by: ${interaction.user.username}`, interaction.user.displayAvatarURL());
 	},
 	youtubePlaylist: (embed, playlist, interaction) => {
