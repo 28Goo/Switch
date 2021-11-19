@@ -11,7 +11,7 @@ module.exports.playMusic = async (interaction) => {
 	let song;
 	let stream = 0;
 	if (!queue[0].title) {
-		[song] = await play.search(queue[0].song, { limit:1 });
+		[song] = await play.search(queue[0].sp, { limit:1 });
 		stream = await play.stream(song.url)
 		.catch(async (error) => {
 			console.log(error);
