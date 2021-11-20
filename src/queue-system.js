@@ -121,9 +121,10 @@ module.exports = {
 		const embed = new MessageEmbed;
 		if (!songs[position]) {
 			editEmbed.noSong(embed);
-			return;
 		}
-		editEmbed.play(embed, songs[position]);
+		else {
+			editEmbed.play(embed, songs[position]);
+		}
 		interaction.followUp({ embeds: [embed] });
 	},
 };

@@ -67,7 +67,7 @@ module.exports = {
 		}
 		else if (check === 'sp_track') {
 			const track = await play.spotify(query);
-			const song = `${track.name} - ${track.artists[0].name}`;
+			const song = `${track.name} by ${track.artists[0].name}`;
 			result = {
 				sp: song,
 				url: track.url,
@@ -80,7 +80,7 @@ module.exports = {
 			songs = await play.spotify(query);
 			const tracks = songs.page(1);
 			for (const track of tracks) {
-				const song = `${track.name} - ${track.artists[0].name}`;
+				const song = `${track.name} by ${track.artists[0].name}`;
 				result = {
 					sp: song,
 					url: track.url,
@@ -94,7 +94,7 @@ module.exports = {
 			songs = await play.spotify(query);
 			const tracks = songs.page(1);
 			for (const track of tracks) {
-				const song = `${track.name} - ${track.artists[0].name}`;
+				const song = `${track.name} by ${track.artists[0].name}`;
 				result = {
 					sp: song,
 					url: track.url,
