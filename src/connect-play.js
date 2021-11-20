@@ -8,8 +8,8 @@ module.exports.playMusic = async (interaction) => {
 	const queue = getQueue(guild);
 	const connection = getVoiceConnection(guild);
 	
-	let song;
-	let stream = 0;
+	console.log({ Song: queue[0] });
+	let song, stream;
 	if (!queue[0].title) {
 		[song] = await play.search(queue[0].sp, { limit:1 });
 		stream = await play.stream(song.url)
