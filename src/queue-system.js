@@ -33,6 +33,8 @@ module.exports = {
 		return;
 	},
 	playNextSong: async (guild, interaction) => {
+		if (play.is_expired()) await play.refreshToken();
+		
 		position++;
 	
 		const songs = queue.get(guild).songs;
@@ -54,7 +56,7 @@ module.exports = {
 				behaviors: NoSubscriberBehavior.Play,
 			});
 		}
-		
+
 		console.log({ Song: songs[position] });
 		let song, stream;
 		if (!songs[position].title) {
