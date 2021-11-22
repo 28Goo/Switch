@@ -40,7 +40,7 @@ client.on('interactionCreate', async interaction => {
 		console.error(error);
 		const embed = new MessageEmbed();
 		editEmbed.error(embed);
-		await interaction.followUp({ embeds: [embed], ephemeral:true });
+		await interaction.followUp({ embeds: [embed] });
 	}
 });
 

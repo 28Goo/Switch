@@ -14,7 +14,7 @@ module.exports.playMusic = async (interaction) => {
 		[song] = await play.search(queue[0].sp, { limit:1 });
 		stream = await play.stream(song.url)
 		.catch(async (error) => {
-			console.log(error);
+			console.error(error);
 			const songs = await play.search(queue[0].song, { limit:2 });
 			song = songs[1];
 			stream = await play.stream(song.url);
@@ -48,7 +48,7 @@ module.exports.playMusic = async (interaction) => {
 	});
 
 	player.on('error', error => {
-		console.error(`Error: ${error.message} with resource ${error.resource.metadata}`);
+		console.error(error);
 		playNextSong(guild, interaction);
 	});
 };
