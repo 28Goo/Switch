@@ -37,7 +37,7 @@ client.on('interactionCreate', async interaction => {
 		await command.execute(interaction);
 	}
 	catch (error) {
-		console.error(error);
+		console.error(`Index Error: ${error}`);
 		const embed = new MessageEmbed();
 		editEmbed.error(embed);
 		await interaction.followUp({ embeds: [embed] });

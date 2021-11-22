@@ -14,7 +14,7 @@ module.exports = {
 		setTimeout(() => {
 			msg.delete()
 			.catch(error => {
-				if (error.code === 1008) console.error('Message already deleted.');
+				if (error.code === 1008) console.error('Message Error: Message already deleted.');
 			});
 		}, duration);
 	},

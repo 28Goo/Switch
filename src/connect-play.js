@@ -12,6 +12,7 @@ module.exports.playMusic = async (interaction) => {
 	let song, stream;
 	if (!queue[0].title) {
 		[song] = await play.search(queue[0].sp, { limit:1 });
+		console.log(song);
 		stream = await play.stream(song.url)
 		.catch(async (error) => {
 			console.error(error);
@@ -48,7 +49,7 @@ module.exports.playMusic = async (interaction) => {
 	});
 
 	player.on('error', error => {
-		console.error(error);
+		console.error(`Player Error: ${error}`);
 		playNextSong(guild, interaction);
 	});
 };
