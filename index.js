@@ -11,6 +11,7 @@ const client = new Client({ intents: [
 	Intents.FLAGS.GUILD_VOICE_STATES,
 ] });
 
+
 client.commands = new Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 
@@ -24,6 +25,7 @@ for (const file of commandFiles) {
 // When client is ready, run code below
 client.once('ready', c => {
 	console.log(`Ready! Logged in as ${c.user.tag}`);
+	c.user.setPresence({ activities: [{ name: `${c.guilds.cache.size} servers with /play`, type:'LISTENING' }] });
 });
 
 client.on('interactionCreate', async interaction => {
