@@ -25,7 +25,7 @@ for (const file of commandFiles) {
 // When client is ready, run code below
 client.once('ready', c => {
 	console.log(`Ready! Logged in as ${c.user.tag}`);
-	c.user.setPresence({ activities: [{ name: `${c.guilds.cache.size} servers with /play`, type:'LISTENING' }] });
+	c.user.setPresence({ activities: [{ name: `/play on ${c.guilds.cache.size} servers.`, type:'LISTENING' }] });
 });
 
 client.on('interactionCreate', async interaction => {
