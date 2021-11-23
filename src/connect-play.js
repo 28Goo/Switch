@@ -63,7 +63,9 @@ module.exports.playMusic = async (interaction) => {
 	player.on('stateChange', async (oldState, newState) => {
 		console.log(`Switch transitioned from ${oldState.status} to ${newState.status}`);
 
-		if (newState.status === 'playing') playMessage(interaction, songs[guildQueue.position]);
+		if (oldState.status === 'buffering' && newState.status === 'playing') {
+			playMessage(interaction, songs[guildQueue.position]);
+		}
 
 		if (oldState.status === 'playing' && newState.status === 'idle') {
 			guildQueue.position++;
