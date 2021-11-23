@@ -70,7 +70,7 @@ module.exports = {
 		const guildQueue = queue.get(guild);
 		guildQueue.loop = false;
 	},
-	getNowPlaying: (interaction, guild) => {
+	getNowPlaying: async (interaction, guild) => {
 		const guildQueue = queue.get(guild);
 		const songs = guildQueue.songs;
 
@@ -79,7 +79,7 @@ module.exports = {
 			editEmbed.noSong(embed);
 		}
 		else {
-			editEmbed.play(embed, songs[guildQueue.position]);
+			await editEmbed.play(embed, songs[guildQueue.position]);
 		}
 		interaction.followUp({ embeds: [embed] });
 	},

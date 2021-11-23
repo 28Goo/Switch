@@ -1,11 +1,13 @@
+const play = require('play-dl');
 const hex = require('./hex-values.json');
 
 module.exports.editEmbed = {
-	play: (embed, song) => {
+	play: async (embed, song) => {
 		embed.setColor(hex.default);
 		embed.setTitle('Now Playing');
 		if (!song.title) {
-			embed.setDescription(`[${song.sp}](${song.url})`);
+			[song] = await play.search(song.sp, { limit:1 });
+			embed.setDescription(`[${song.title}](${song.url})`);
 		}
 		else {
 			embed.setDescription(`[${song.title}](${song.url})`);

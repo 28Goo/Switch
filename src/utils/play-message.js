@@ -5,7 +5,7 @@ const { editEmbed } = require('./embeds');
 module.exports = {
 	playMessage: async (interaction, song) => {
 		const embed = new MessageEmbed;
-		editEmbed.play(embed, song);
+		await editEmbed.play(embed, song);
 		const msg = await interaction.channel.send({ embeds: [embed] });
 
 		const connection = getVoiceConnection(interaction.guild.id);
