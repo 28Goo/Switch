@@ -115,8 +115,9 @@ module.exports = {
 				return;
 			}
 		}
-
-		await playMusic(interaction);
+		
 		await interaction.followUp({ embeds: [embed] });
+		await playMusic(interaction);
+		
 	},
 };

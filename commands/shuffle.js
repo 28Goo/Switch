@@ -17,11 +17,11 @@ module.exports = {
 
 		const queue = getQueue(guild);
 
-		for (let position = queue.length - 1; position > 0; position--) {
+		for (let position = queue.songs.length - 1; position > 0; position--) {
 			const newPosition = Math.floor(Math.random() * (position + 1));
-			const placeholder = queue[position];
-			queue[position] = queue[newPosition];
-			queue[newPosition] = placeholder;
+			const placeholder = queue.songs[position];
+			queue.songs[position] = queue.songs[newPosition];
+			queue.songs[newPosition] = placeholder;
 		}
 
 		const embed = new MessageEmbed();

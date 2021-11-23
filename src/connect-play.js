@@ -1,55 +1,84 @@
 const { createAudioResource, createAudioPlayer, NoSubscriberBehavior, getVoiceConnection } = require('@discordjs/voice');
+const { MessageEmbed } = require('discord.js');
 const play = require('play-dl');
-const { playNextSong, getQueue } = require('./queue-system');
+const { getQueue } = require('./queue-system');
+const { editEmbed } = require('./utils/embeds');
 const { playMessage } = require('./utils/play-message');
 
 module.exports.playMusic = async (interaction) => {
+	// Refresh token if expired
+	if (play.is_expired()) await play.refreshToken();
+
+	// Get necessary data to play music
 	const guild = interaction.guild.id;
-	const queue = getQueue(guild);
 	const connection = getVoiceConnection(guild);
+
+	const guildQueue = getQueue(guild);
+	const songs = guildQueue.songs;
+	const position = guildQueue.position;
+
+	if (!songs[position] && guildQueue.loop === true) {
+		guildQueue.position = 0;
+	}
+	if (!songs[guildQueue.position]) {
+		guildQueue.songs = [];
+		guildQueue.position = 0;
+		return;
+	}
 	
-	console.log({ Song: queue[0] });
+	// Get song audio
 	let song, stream;
-	if (!queue[0].title) {
-		[song] = await play.search(queue[0].sp, { limit:1 });
+	if (!songs[guildQueue.position].title) {
+		[song] = await play.search(songs[guildQueue.position].sp, { limit:1 });
 		console.log(song);
 		stream = await play.stream(song.url)
 		.catch(async (error) => {
 			console.error(error);
-			const songs = await play.search(queue[0].song, { limit:2 });
-			song = songs[1];
-			stream = await play.stream(song.url);
+			const song2 = await play.search(songs[guildQueue.position].song, { limit:2 });
+			stream = await play.stream(song2[1].url);
 			return stream;
 		});
 	}
 	else {
-		stream = await play.stream(queue[0].url);
+		stream = await play.stream(songs[guildQueue.position].url);
+	}
+
+	// Create Player
+	let player, resource;
+
+	if (!player && !resource) {
+		player = createAudioPlayer({
+			behaviors: NoSubscriberBehavior.Play,
+		});
+	
+		resource = createAudioResource(stream.stream, {
+			inputType: stream.type,
+		});
 	}
 	
-	const resource = createAudioResource(stream.stream, {
-		inputType: stream.type,
-	});
-
-	const player = createAudioPlayer({
-		behaviors: NoSubscriberBehavior.Play,
-	});
-
 	player.play(resource);
 	connection.subscribe(player);
 
-	if (!queue[0].title) playMessage(interaction, song);
-	else playMessage(interaction, queue[0]);
-
+	// Player State Checker
 	player.on('stateChange', async (oldState, newState) => {
 		console.log(`Switch transitioned from ${oldState.status} to ${newState.status}`);
 
+		if (newState.status === 'playing') playMessage(interaction, songs[guildQueue.position]);
+
 		if (oldState.status === 'playing' && newState.status === 'idle') {
-			playNextSong(guild, interaction);
+			guildQueue.position++;
+			this.playMusic(interaction);
 		}
 	});
 
 	player.on('error', error => {
-		console.error(`Player Error: ${error}`);
-		playNextSong(guild, interaction);
+		console.error('Player Error:', error);
+		if (error === 'Invalid URL') {
+			const embed = new MessageEmbed();
+			editEmbed.invalidUrl(embed);
+			interaction.channel.send({ embeds:[embed] });
+			return;
+		}
+		this.playMusic(interaction);
 	});
 };

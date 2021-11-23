@@ -27,10 +27,8 @@ module.exports.editEmbed = {
 		embed.setTitle('Youtube Playlist Added')
 			.setFields(
 				{ name: 'Playlist:', value: `[${playlist.title}](${playlist.url})`, inline: true },
-				{ name: 'Channel:', value: `[${playlist.channel.name}](${playlist.channel.url})`, inline: true },
 				{ name: 'Track Count:', value: `${playlist.videoCount}`, inline: true },
 			)
-			.setThumbnail(playlist.thumbnail.url)
 			.setFooter(`Added by ${interaction.user.username}`, interaction.user.displayAvatarURL());
 	},
 	spotifyPlaylist: (embed, playlist, interaction) => {

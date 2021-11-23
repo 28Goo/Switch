@@ -15,7 +15,7 @@ module.exports = {
 		if (botNotConnected(interaction, connection)) return;
 
 		clearQueue(interaction.guild.id);
-		stopLoop();
+		stopLoop(interaction.guild.id);
 		connection.destroy();
 
 		const embed = new MessageEmbed();
