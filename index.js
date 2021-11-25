@@ -11,7 +11,6 @@ const client = new Client({ intents: [
 	Intents.FLAGS.GUILD_VOICE_STATES,
 ] });
 
-
 client.commands = new Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 
@@ -29,6 +28,8 @@ client.once('ready', c => {
 });
 
 client.on('interactionCreate', async interaction => {
+	client.user.setPresence({ activities: [{ name: `/play on ${client.guilds.cache.size} servers.`, type:'LISTENING' }] });
+
 	if (!interaction.isCommand()) return;
 
 	const command = client.commands.get(interaction.commandName);
