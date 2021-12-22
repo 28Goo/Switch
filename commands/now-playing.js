@@ -6,7 +6,7 @@ const { userNotConntected, botNotConnected } = require('../src/utils/not-connect
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('np')
-		.setDescription('Show currently playing song'),
+		.setDescription('Show currently playing song.'),
 	async execute(interaction) {
 		const guild = interaction.guild.id;
 		const connection = getVoiceConnection(guild);

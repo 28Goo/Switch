@@ -1,27 +1,28 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { getVoiceConnection } = require('@discordjs/voice');
 const { MessageEmbed } = require('discord.js');
-const { clearQueue } = require('../src/queue-system');
 const { editEmbed } = require('../src/utils/embeds');
 const { userNotConntected, botNotConnected } = require('../src/utils/not-connected');
+const { removeSong } = require('../src/queue-system');
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('clear')
-		.setDescription('Clears the queue.'),
+		.setName('remove')
+		.setDescription('Removes a song from queue.')
+		.addStringOption(option => option.setName('position')
+			.setDescription('Input position of the song you want to remove.')
+			.setRequired(true)),
 	async execute(interaction) {
+		const connection = getVoiceConnection(interaction.guild.id);
 		if (userNotConntected(interaction)) return;
-		
-		const guild = interaction.guild.id;
-		const connection = getVoiceConnection(guild);
 		if (botNotConnected(interaction, connection)) return;
-		
-		clearQueue(guild);
-		const player = connection.state.subscription.player;
-		player.stop();
+
+		let position = interaction.options.getString('position');
+		position = parseInt(position) - 1;
+		const song = removeSong(interaction.guild.id, position);
 
 		const embed = new MessageEmbed();
-		editEmbed.clear(embed, interaction);
+		editEmbed.removeSong(embed, song);
 		await interaction.followUp({ embeds: [embed] });
 	},
 };

@@ -15,9 +15,8 @@ module.exports.playMusic = async (interaction) => {
 
 	const guildQueue = getQueue(guild);
 	const songs = guildQueue.songs;
-	const position = guildQueue.position;
 
-	if (!songs[position] && guildQueue.loop === true) {
+	if (!songs[guildQueue.position] && guildQueue.loop === true) {
 		guildQueue.position = 0;
 	}
 	if (!songs[guildQueue.position]) {
@@ -29,8 +28,7 @@ module.exports.playMusic = async (interaction) => {
 	// Get song audio
 	let song, stream;
 	if (!songs[guildQueue.position].title) {
-		[song] = await play.search(songs[guildQueue.position].sp, { limit:1 });
-		console.log(song);
+		[song] = await play.search(songs[guildQueue.position].song, { limit:1 });
 		stream = await play.stream(song.url)
 		.catch(async (error) => {
 			console.error(error);

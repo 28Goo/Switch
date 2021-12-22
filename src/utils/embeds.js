@@ -6,18 +6,19 @@ module.exports.editEmbed = {
 		embed.setColor(hex.default);
 		embed.setTitle('Now Playing');
 		if (!song.title) {
-			[song] = await play.search(song.sp, { limit:1 });
+			[song] = await play.search(song.song, { limit:1 });
 			embed.setDescription(`[${song.title}](${song.url})`);
 		}
 		else {
 			embed.setDescription(`[${song.title}](${song.url})`);
 		}
+		console.log(`Now Playing: ${song.title}`);
 	},
 	addedToQueue: (embed, search, interaction) => {
 		embed.setColor(hex.default)
 		.setTitle('Added To Queue');
 		if (!search.title) {
-			embed.setDescription(`[${search.sp}](${search.url})`);
+			embed.setDescription(`[${search.song}](${search.url})`);
 		}
 		else {
 			embed.setDescription(`[${search.title}](${search.url})`);
@@ -50,9 +51,19 @@ module.exports.editEmbed = {
 			.setFields(
 				{ name: 'Album:', value: `[${album.name}](${album.url})`, inline: true },
 				{ name: 'Artist:', value: `[${album.artists[0].name}](${album.artists[0].url})`, inline:true },
-				{ name: 'Track Count:', value: `${album.trackCount}`, inline: true },
+				{ name: 'Track Count:', value: `${album.tracksCount}`, inline: true },
 			)
 			.setThumbnail(album.thumbnail.url)
+			.setFooter(`Added by ${interaction.user.username}`, interaction.user.displayAvatarURL());
+	},
+	soundcloudPlaylist: (embed, playlist, interaction) => {
+		embed.setColor(hex.soundcloud);
+		embed.setTitle('Soundcloud Playlist Added')
+			.setFields(
+				{ name: 'Playlist:', value: `[${playlist.name}](${playlist.url})`, inline: true },
+				{ name: 'Owner:', value: `[${playlist.user.name}](${playlist.user.url})`, inline:true },
+				{ name: 'Track Count:', value: `${playlist.tracksCount}`, inline: true },
+			)
 			.setFooter(`Added by ${interaction.user.username}`, interaction.user.displayAvatarURL());
 	},
 	pause: (embed, inteaction) => {
@@ -69,7 +80,7 @@ module.exports.editEmbed = {
 	},
 	clear: (embed, interaction) => {
 		embed.setColor(hex.clear);
-		embed.setDescription(`Switch has been cleared by ${interaction.member}`);
+		embed.setDescription(`Switch has been stopped by ${interaction.member}`);
 	},
 	shuffle: (embed, interaction) => {
 		embed.setColor(hex.shuffle);
@@ -105,5 +116,31 @@ module.exports.editEmbed = {
 	noSong: (embed) => {
 		embed.setColor(hex.error);
 		embed.setDescription('No song is currently playing.');
+	},
+	removeSong: (embed, song) => {
+		embed.setColor(hex.clear);
+		[song] = song;
+		if (!song.song) {
+			embed.setDescription(`${song.title} has been removed from queue`);
+		}
+		else {
+			embed.setDescription(`${song.song} has been removed from queue`);
+		}
+	},
+	help: (embed) => {
+		embed.setColor(hex.help);
+		embed.setTitle('Commands');
+		embed.setDescription(`
+			\`/play\`: Play a song in a voice channel. \n
+			\`/shuffle\`: Shuffles the queue. \n
+			\`/resume\`: Resumes the music. \n
+			\`/pause\`: Pauses song from playing. \n
+			\`/skip\`: Skips current track. \n
+			\`/stop\`: Stops the queue. \n
+			\`/disconnect\`: Disconnects Switch from the voice channel. \n
+			\`/np\`: Show currently playing song. \n
+			\`/loop\`: Loops the queue. \n
+			\`/remove\`: Removes a song from queue. \n
+		`);
 	},
 };

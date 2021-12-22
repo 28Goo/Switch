@@ -19,7 +19,7 @@ module.exports = {
 			.setRequired(true)),
 	async execute(interaction) {
 		const query = interaction.options.getString('query');
-		console.log({ query });
+		console.log(`Query: ${query}`);
 		const embed = new MessageEmbed();
 
 		if (userNotConntected(interaction)) return;
@@ -69,7 +69,7 @@ module.exports = {
 			const track = await play.spotify(query);
 			const song = `${track.name} by ${track.artists[0].name}`;
 			result = {
-				sp: song,
+				song,
 				url: track.url,
 				durationInMs: track.durationInMs,
 			};
@@ -82,7 +82,7 @@ module.exports = {
 			for (const track of tracks) {
 				const song = `${track.name} by ${track.artists[0].name}`;
 				result = {
-					sp: song,
+					song,
 					url: track.url,
 					durationInMs: track.durationInMs,
 				};
@@ -96,13 +96,38 @@ module.exports = {
 			for (const track of tracks) {
 				const song = `${track.name} by ${track.artists[0].name}`;
 				result = {
-					sp: song,
+					song,
 					url: track.url,
 					durationInMs: track.durationInMs,
 				};
 				addSongToQueue(guild, result);
 			}
 			editEmbed.spotifyAlbum(embed, songs, interaction);
+		}
+		else if (check === 'so_track') {
+			const track = await play.soundcloud(query);
+			const song = `${track.name} by ${track.user.name}`;
+			result = {
+				song,
+				url: track.url,
+				durationInMs: track.durationInMs,
+			};
+			addSongToQueue(guild, result);
+			editEmbed.addedToQueue(embed, result, interaction);
+		}
+		else if (check === 'so_playlist') {
+			songs = await play.soundcloud(query);
+			const { tracks } = await songs.fetch();
+			for (const track of tracks) {
+				const song = `${track.name} by ${track.user.name}`;
+				result = {
+					song,
+					url: track.url,
+					durationInMs: track.durationInMs,
+				};
+				addSongToQueue(guild, result);
+			}
+			editEmbed.soundcloudPlaylist(embed, songs, interaction);
 		}
 
 		// Check if Bot is playing music then add song/s to queue

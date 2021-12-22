@@ -3,6 +3,7 @@ const fs = require('fs');
 const { Client, Collection, Intents, MessageEmbed } = require('discord.js');
 const { token } = require('./config.json');
 const { editEmbed } = require('./src/utils/embeds');
+const keepAlive = require('./server');
 
 // Create client instance
 const client = new Client({ intents: [
@@ -24,14 +25,12 @@ for (const file of commandFiles) {
 // When client is ready, run code below
 client.once('ready', c => {
 	console.log(`Ready! Logged in as ${c.user.tag}`);
-	c.user.setPresence({ activities: [{ name: `/play on ${c.guilds.cache.size} servers.`, type:'LISTENING' }] });
+	c.user.setPresence({ activities: [{ name: '/play', type:'LISTENING' }] });
 });
 
 client.on('interactionCreate', async interaction => {
-	client.user.setPresence({ activities: [{ name: `/play on ${client.guilds.cache.size} servers.`, type:'LISTENING' }] });
-
 	if (!interaction.isCommand()) return;
-
+		
 	const command = client.commands.get(interaction.commandName);
 	if (!command) return;
 
@@ -47,4 +46,5 @@ client.on('interactionCreate', async interaction => {
 	}
 });
 
+keepAlive();
 client.login(token);
