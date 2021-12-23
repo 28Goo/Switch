@@ -40,7 +40,7 @@ client.on('interactionCreate', async interaction => {
 	}
 	catch (error) {
 		const handledError = handleError(error);
-		await interaction.send({ embeds: [handledError] });
+		await interaction.followUp({ embeds: [handledError] });
 	}
 });
 keepAlive();
