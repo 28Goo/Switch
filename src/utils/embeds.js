@@ -143,4 +143,12 @@ module.exports.editEmbed = {
 			\`/remove\`: Removes a song from queue. \n
 		`);
 	},
+	unviewable: (embed) => {
+		embed.setColor(hex.error);
+		embed.setDescription('This playlist type is unviewable');
+	},
+	timeout: (embed) => {
+		embed.setColor(hex.error);
+		embed.setDescription('Connection Timeout.');
+	},
 };

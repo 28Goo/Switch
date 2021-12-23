@@ -1,9 +1,9 @@
 // Get requirements for bot to work
 const fs = require('fs');
-const { Client, Collection, Intents, MessageEmbed } = require('discord.js');
+const { Client, Collection, Intents } = require('discord.js');
 const { token } = require('./config.json');
-const { editEmbed } = require('./src/utils/embeds');
 const keepAlive = require('./server');
+const handleError = require('./src/utils/error-handling');
 
 // Create client instance
 const client = new Client({ intents: [
@@ -39,12 +39,9 @@ client.on('interactionCreate', async interaction => {
 		await command.execute(interaction);
 	}
 	catch (error) {
-		console.error('Index Error:', error);
-		const embed = new MessageEmbed();
-		editEmbed.error(embed);
-		await interaction.followUp({ embeds: [embed] });
+		const handledError = handleError(error);
+		await interaction.send({ embeds: [handledError] });
 	}
 });
-
 keepAlive();
 client.login(token);
