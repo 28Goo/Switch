@@ -3,16 +3,16 @@
 Switch is a bot that lets you play music on Discord.
 
 ## Usage:
-`/play`: Play a song in a voice channel. \n
-`/shuffle`: Shuffles the queue. \n
-`/resume`: Resumes the music. \n
-`/pause`: Pauses song from playing. \n
-`/skip`: Skips current track. \n
-`/stop`: Stops the queue. \n
-`/disconnect`: Disconnects Switch from the voice channel. \n
-`/np`: Show currently playing song. \n
-`/loop`: Loops the queue. \n
-`/remove`: Removes a song from queue. \n
+`/play`: Play a song in a voice channel. <br />
+`/shuffle`: Shuffles the queue. <br />
+`/resume`: Resumes the music. <br />
+`/pause`: Pauses song from playing. <br />
+`/skip`: Skips current track. <br />
+`/stop`: Stops the queue. <br />
+`/disconnect`: Disconnects Switch from the voice channel. <br />
+`/np`: Show currently playing song. <br />
+`/loop`: Loops the queue. <br />
+`/remove`: Removes a song from queue. <br />
 
 ### Supported Platforms:
 
