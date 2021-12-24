@@ -18,13 +18,15 @@ module.exports = {
 			.setDescription('Input a song or URL From Youtube or Spotify')
 			.setRequired(true)),
 	async execute(interaction) {
-		const query = interaction.options.getString('query');
+		let query = interaction.options.getString('query');
 		console.log(`Query: ${query}`);
 		const embed = new MessageEmbed();
 
 		if (userNotConntected(interaction)) return;
 
 		if (play.is_expired()) await play.refreshToken();
+
+		if (query.includes('music.youtube')) query = query.replace('music.', '');
 
 		const check = await play.validate(query);
 
