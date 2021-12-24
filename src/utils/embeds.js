@@ -118,8 +118,14 @@ module.exports.editEmbed = {
 		embed.setDescription('No song is currently playing.');
 	},
 	removeSong: (embed, song) => {
-		embed.setColor(hex.clear);
+		if (!song) {
+			embed.setColor(hex.error);
+			embed.setDescription('There is no song in this position');
+			return;
+		}
+
 		[song] = song;
+		embed.setColor(hex.clear);
 		if (!song.song) {
 			embed.setDescription(`${song.title} has been removed from queue`);
 		}

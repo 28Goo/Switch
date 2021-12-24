@@ -72,7 +72,10 @@ module.exports = {
 	},
 	removeSong: (guild, position) => {
 		const guildQueue = queue.get(guild);
-		return guildQueue.songs.songlice(position, 1);
+
+		if (!guildQueue.songs[position]) return null;
+
+		return guildQueue.songs.splice(position, 1);
 	},
 	getNowPlaying: async (interaction, guild) => {
 		const guildQueue = queue.get(guild);
