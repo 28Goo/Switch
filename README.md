@@ -17,6 +17,7 @@ Switch is a bot that lets you play music on Discord.
 ### Supported Platforms:
 
 * Youtube
+* Youtube Music
 * Spotify
 * Soundcloud
 
