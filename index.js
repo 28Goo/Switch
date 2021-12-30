@@ -2,7 +2,6 @@
 const fs = require('fs');
 const { Client, Collection, Intents } = require('discord.js');
 const { token } = require('./config.json');
-const keepAlive = require('./server');
 const handleError = require('./src/utils/error-handling');
 
 // Create client instance
@@ -44,5 +43,5 @@ client.on('interactionCreate', async interaction => {
 		await interaction.followUp({ embeds: [handledError] });
 	}
 });
-keepAlive();
+
 client.login(token);
