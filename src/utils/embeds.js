@@ -127,10 +127,10 @@ module.exports.editEmbed = {
 		[song] = song;
 		embed.setColor(hex.clear);
 		if (!song.song) {
-			embed.setDescription(`${song.title} has been removed from queue`);
+			embed.setDescription(`\`${song.title}\` has been removed from queue`);
 		}
 		else {
-			embed.setDescription(`${song.song} has been removed from queue`);
+			embed.setDescription(`\`${song.song}\` has been removed from queue`);
 		}
 	},
 	help: (embed) => {
