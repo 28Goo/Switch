@@ -26,8 +26,6 @@ module.exports = {
 
 		if (play.is_expired()) await play.refreshToken();
 
-		if (query.includes('music.youtube')) query = query.replace('music.', '');
-
 		const check = await play.validate(query);
 
 		if (!check) {
