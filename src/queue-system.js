@@ -152,7 +152,9 @@ module.exports = {
 		const songs = guildQueue.songs;
 		
 		if (!songs[0]) {
-			queueEmbed.setDescription('Queue is empty');
+			queueEmbed.setDescription('No song is currently playing.');
+			interaction.reply({ embeds: [queueEmbed] });
+			return;
 		}
 
 		let queueString = '';
