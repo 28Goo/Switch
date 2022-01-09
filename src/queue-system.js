@@ -114,7 +114,6 @@ module.exports = {
 		}
 
 		initial -= 10;
-		console.log(initial);
 
 		queueEmbed.setDescription(queueString);
 
