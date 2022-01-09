@@ -3,6 +3,7 @@ const fs = require('fs');
 const { Client, Collection, Intents } = require('discord.js');
 const { token } = require('./config.json');
 const handleError = require('./src/utils/error-handling');
+const { presentQueue } = require('./src/queue-system');
 
 // Create client instance
 const client = new Client({ intents: [
@@ -28,19 +29,22 @@ client.once('ready', c => {
 });
 
 client.on('interactionCreate', async interaction => {
-	if (!interaction.isCommand()) return;
-		
-	const command = client.commands.get(interaction.commandName);
-	if (!command) return;
-
-	await interaction.deferReply();
-
-	try {
-		await command.execute(interaction);
+	if (interaction.isCommand()) {
+		const command = client.commands.get(interaction.commandName);
+		if (!command) return;
+	
+		try {
+			await command.execute(interaction);
+		}
+		catch (error) {
+			const handledError = handleError(error);
+			await interaction.channel.send({ embeds: [handledError] });
+		}
 	}
-	catch (error) {
-		const handledError = handleError(error);
-		await interaction.followUp({ embeds: [handledError] });
+
+	if (interaction.isButton()) {
+		const editedQueue = presentQueue(interaction.guildId, interaction.customId);
+		interaction.update({ embeds:[editedQueue] });
 	}
 });
 

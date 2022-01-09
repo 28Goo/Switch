@@ -18,7 +18,7 @@ module.exports = {
 			.setDescription('Input a song or URL From Youtube or Spotify')
 			.setRequired(true)),
 	async execute(interaction) {
-		let query = interaction.options.getString('query');
+		const query = interaction.options.getString('query');
 		console.log(`Query: ${query}`);
 		const embed = new MessageEmbed();
 
@@ -30,7 +30,7 @@ module.exports = {
 
 		if (!check) {
 			editEmbed.invalidUrl(embed);
-			await interaction.followUp({ embeds: [embed] });
+			await interaction.reply({ embeds: [embed] });
 			return;
 		}
 
@@ -140,7 +140,7 @@ module.exports = {
 			}
 			default: {
 				editEmbed.invalidUrl(embed);
-				await interaction.followUp({ embeds: [embed] });
+				await interaction.reply({ embeds: [embed] });
 				return;
 			}
 		}
@@ -151,12 +151,12 @@ module.exports = {
 		if (subscription) {
 			const playerStatus = subscription.player.state.status;
 			if (playerStatus === 'playing') {
-				await interaction.followUp({ embeds: [embed] });
+				await interaction.reply({ embeds: [embed] });
 				return;
 			}
 		}
 		
-		await interaction.followUp({ embeds: [embed] });
+		await interaction.reply({ embeds: [embed] });
 		await playMusic(interaction);
 		
 	},

@@ -31,7 +31,7 @@ module.exports.editEmbed = {
 			.setFields(
 				{ name: 'Playlist:', value: `[${playlist.title}](${playlist.url})`, inline: true },
 				{ name: 'Track Count:', value: `${playlist.total_videos}`, inline: true },
-			)
+			);
 		embed.setFooter({ text: `Added by: ${interaction.user.username}`, iconURL: interaction.user.displayAvatarURL() });
 	},
 	spotifyPlaylist: (embed, playlist, interaction) => {
@@ -42,7 +42,7 @@ module.exports.editEmbed = {
 				{ name: 'Owner:', value: `[${playlist.owner.name}](${playlist.owner.url})`, inline:true },
 				{ name: 'Track Count:', value: `${playlist.tracksCount}`, inline: true },
 			)
-			.setThumbnail(playlist.thumbnail.url)
+			.setThumbnail(playlist.thumbnail.url);
 		embed.setFooter({ text: `Added by: ${interaction.user.username}`, iconURL: interaction.user.displayAvatarURL() });
 	},
 	spotifyAlbum: (embed, album, interaction) => {
@@ -53,7 +53,7 @@ module.exports.editEmbed = {
 				{ name: 'Artist:', value: `[${album.artists[0].name}](${album.artists[0].url})`, inline:true },
 				{ name: 'Track Count:', value: `${album.tracksCount}`, inline: true },
 			)
-			.setThumbnail(album.thumbnail.url)
+			.setThumbnail(album.thumbnail.url);
 		embed.setFooter({ text: `Added by: ${interaction.user.username}`, iconURL: interaction.user.displayAvatarURL() });
 	},
 	soundcloudPlaylist: (embed, playlist, interaction) => {
@@ -63,7 +63,7 @@ module.exports.editEmbed = {
 				{ name: 'Playlist:', value: `[${playlist.name}](${playlist.url})`, inline: true },
 				{ name: 'Owner:', value: `[${playlist.user.name}](${playlist.user.url})`, inline:true },
 				{ name: 'Track Count:', value: `${playlist.tracksCount}`, inline: true },
-			)
+			);
 		embed.setFooter({ text: `Added by: ${interaction.user.username}`, iconURL: interaction.user.displayAvatarURL() });
 	},
 	pause: (embed, inteaction) => {
@@ -136,17 +136,16 @@ module.exports.editEmbed = {
 	help: (embed) => {
 		embed.setColor(hex.help);
 		embed.setTitle('Commands');
-		embed.setDescription(`
-			\`/play\`: Play a song in a voice channel. \n
-			\`/shuffle\`: Shuffles the queue. \n
-			\`/resume\`: Resumes the music. \n
-			\`/pause\`: Pauses song from playing. \n
-			\`/skip\`: Skips current track. \n
-			\`/stop\`: Stops the queue. \n
-			\`/disconnect\`: Disconnects Switch from the voice channel. \n
-			\`/np\`: Show currently playing song. \n
-			\`/loop\`: Loops the queue. \n
-			\`/remove\`: Removes a song from queue. \n
+		embed.setDescription(`\`/play\`: Play a song in a voice channel.
+\`/shuffle\`: Shuffles the queue.
+\`/resume\`: Resumes the music.
+\`/pause\`: Pauses song from playing.
+\`/skip\`: Skips current track.
+\`/stop\`: Stops the queue.
+\`/disconnect\`: Disconnects Switch from the voice channel.
+\`/np\`: Show currently playing song.
+\`/loop\`: Loops the queue.
+\`/remove\`: Removes a song from queue.
 		`);
 	},
 	unviewable: (embed) => {
