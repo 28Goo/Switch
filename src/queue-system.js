@@ -122,7 +122,6 @@ module.exports = {
 	makeQueue: (interaction, guild) => {
 		const queueEmbed = new MessageEmbed();		
 		queueEmbed.setColor(hex.default);
-		queueEmbed.setTitle('Queue');
 
 		const queueButtons = new MessageActionRow();
 
@@ -174,6 +173,7 @@ module.exports = {
 			}
 		}
 
+		queueEmbed.setTitle('Queue');
 		queueEmbed.setDescription(queueString);
 
 		interaction.reply({ embeds: [queueEmbed], components: [queueButtons] });
