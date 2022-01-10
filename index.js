@@ -44,7 +44,8 @@ client.on('interactionCreate', async interaction => {
 
 	if (interaction.isButton()) {
 		const editedQueue = presentQueue(interaction.guildId, interaction.customId);
-		interaction.update({ embeds:[editedQueue] });
+		if (!editedQueue.title) interaction.update({ embeds:[editedQueue], components: [] });
+		else interaction.update({ embeds:[editedQueue] });
 	}
 });
 

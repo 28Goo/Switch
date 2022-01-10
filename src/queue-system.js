@@ -69,10 +69,15 @@ module.exports = {
 	presentQueue: (guild, button) => {	
 		const queueEmbed = new MessageEmbed();	
 		queueEmbed.setColor(hex.default);
-		queueEmbed.setTitle('Queue');
 			
 		const guildQueue = queue.get(guild);
 		const songs = guildQueue.songs;
+
+		if (!songs[0]) {
+			queueEmbed.setColor(hex.error);
+			queueEmbed.setDescription('No song is currently playing.');
+			return queueEmbed;
+		}
 
 		if (button === 'first') {
 			initial = 0;
@@ -115,6 +120,7 @@ module.exports = {
 
 		initial -= 10;
 
+		queueEmbed.setTitle('Queue');
 		queueEmbed.setDescription(queueString);
 
 		return queueEmbed;
@@ -151,6 +157,7 @@ module.exports = {
 		const songs = guildQueue.songs;
 		
 		if (!songs[0]) {
+			queueEmbed.setColor(hex.error);
 			queueEmbed.setDescription('No song is currently playing.');
 			interaction.reply({ embeds: [queueEmbed] });
 			return;
