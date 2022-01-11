@@ -15,7 +15,7 @@ module.exports = {
 		.setName('play')
 		.setDescription('Play a song in a voice channel')
 		.addStringOption(option => option.setName('query')
-			.setDescription('Input a song or URL From Youtube or Spotify')
+			.setDescription('Input a song or URL From Youtube, Spotify or Soundcloud')
 			.setRequired(true)),
 	async execute(interaction) {
 		const query = interaction.options.getString('query');
