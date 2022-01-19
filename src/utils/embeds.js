@@ -6,9 +6,9 @@ module.exports.editEmbed = {
 		embed.setColor(hex.default);
 		embed.setTitle('Now Playing');
 		if (song.platform === 'sp') {
-			[song] = await play.search(song.song, { limit:1 });
-			embed.setDescription(`[${song.title}](${song.url})`);
-			console.log(`Now Playing: ${song.title}`);
+			const [searchedSong] = await play.search(song.song, { limit:1 });
+			embed.setDescription(`[${searchedSong.title}](${searchedSong.url})`);
+			console.log(`Now Playing: ${searchedSong.title}`);
 		}
 		else {
 			embed.setDescription(`[${song.song}](${song.url})`);
