@@ -108,14 +108,8 @@ module.exports = {
 			if (!songs[initial]) break;
 
 			const track = songs[initial];
-			if (!track.title) {
-				if (initial === guildQueue.position) queueString += `${initial + 1}. [${track.song}](${track.url}) \`Now Playing\`\n`;
-				else queueString += `${initial + 1}. [${track.song}](${track.url})\n`;
-			}
-			else if (!track.song) {
-				if (initial === guildQueue.position) queueString += `${initial + 1}. [${track.title}](${track.url}) \`Now Playing\`\n`;
-				else queueString += `${initial + 1}. [${track.title}](${track.url})\n`;
-			}
+			if (initial === guildQueue.position) queueString += `${initial + 1}. [${track.song}](${track.url}) \`Now Playing\`\n`;
+			else queueString += `${initial + 1}. [${track.song}](${track.url})\n`;
 		}
 
 		initial -= 10;
@@ -169,15 +163,8 @@ module.exports = {
 			if (!songs[i]) break;
 
 			const track = songs[i];
-			
-			if (!track.title) {
-				if (i === guildQueue.position) queueString += `${i + 1}. [${track.song}](${track.url}) \`Now Playing\`\n`;
-				else queueString += `${i + 1}. [${track.song}](${track.url})\n`;
-			}
-			else if (!track.song) {
-				if (i === guildQueue.position) queueString += `${i + 1}. [${track.title}](${track.url}) \`Now Playing\`\n`;
-				else queueString += `${i + 1}. [${track.title}](${track.url})\n`;
-			}
+			if (i === guildQueue.position) queueString += `${i + 1}. [${track.song}](${track.url}) \`Now Playing\`\n`;
+			else queueString += `${i + 1}. [${track.song}](${track.url})\n`;
 		}
 
 		queueEmbed.setTitle('Queue');

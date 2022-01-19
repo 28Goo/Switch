@@ -5,24 +5,20 @@ module.exports.editEmbed = {
 	play: async (embed, song) => {
 		embed.setColor(hex.default);
 		embed.setTitle('Now Playing');
-		if (!song.title) {
+		if (song.platform === 'sp') {
 			[song] = await play.search(song.song, { limit:1 });
 			embed.setDescription(`[${song.title}](${song.url})`);
+			console.log(`Now Playing: ${song.title}`);
 		}
 		else {
-			embed.setDescription(`[${song.title}](${song.url})`);
+			embed.setDescription(`[${song.song}](${song.url})`);
+			console.log(`Now Playing: ${song.song}`);
 		}
-		console.log(`Now Playing: ${song.title}`);
 	},
 	addedToQueue: (embed, search, interaction) => {
 		embed.setColor(hex.default)
 		.setTitle('Added To Queue');
-		if (!search.title) {
 			embed.setDescription(`[${search.song}](${search.url})`);
-		}
-		else {
-			embed.setDescription(`[${search.title}](${search.url})`);
-		}
 		embed.setFooter({ text: `Added by: ${interaction.user.username}`, iconURL: interaction.user.displayAvatarURL() });
 	},
 	youtubePlaylist: (embed, playlist, interaction) => {
@@ -126,12 +122,8 @@ module.exports.editEmbed = {
 
 		[song] = song;
 		embed.setColor(hex.clear);
-		if (!song.song) {
-			embed.setDescription(`\`${song.title}\` has been removed from queue`);
-		}
-		else {
-			embed.setDescription(`\`${song.song}\` has been removed from queue`);
-		}
+		embed.setDescription(`\`${song.song}\` has been removed from queue`);
+		
 	},
 	help: (embed) => {
 		embed.setColor(hex.help);
@@ -142,7 +134,7 @@ module.exports.editEmbed = {
 \`/pause\`: Pauses song from playing.
 \`/skip\`: Skips current track.
 \`/stop\`: Stops the queue.
-\`/disconnect\`: Disconnects Switch from the voice channel.
+\`/disconnect\`: Disconnects from the voice channel.
 \`/np\`: Show currently playing song.
 \`/loop\`: Loops the queue.
 \`/remove\`: Removes a song from queue.

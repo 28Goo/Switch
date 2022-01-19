@@ -26,7 +26,7 @@ module.exports.playMusic = async (interaction) => {
 	
 	// Get song audio
 	let song, stream;
-	if (!songs[guildQueue.position].title) {
+	if (songs[guildQueue.position].platform === 'sp') {
 		[song] = await play.search(songs[guildQueue.position].song, { limit:1 });
 		stream = await play.stream(song.url);
 	}
