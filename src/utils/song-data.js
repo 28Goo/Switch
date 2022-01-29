@@ -10,14 +10,14 @@ module.exports = {
 		}
 		else if (platform === 'sp') {
 			data = {
-				song: `${song.name} - ${song.artists[0].name}`,
+				song: `${song.artists[0].name} - ${song.name}`,
 				url: song.url,
 				platform,
 			};
 		}
 		else if (platform === 'so') {
 			data = {
-				song: `${song.name} - ${song.user.name}`,
+				song: `${song.user.name} - ${song.name}`,
 				url: song.url,
 				platform,
 			};
